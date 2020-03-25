@@ -90,7 +90,6 @@ export default {
       await this.$bind('acceptedStudentsQueue', db.collection('accepted').where('inQueue', '==', true))
       await this.$bind('claimedAcceptedStudents', db.collection('accepted').where('inQueue', '==', false).where('currentlyClaimedBy', '==', db.collection('current').doc(this.userEmail)))
     } catch (e) {
-      console.error(e)
     }
   },
   methods: {
@@ -117,9 +116,6 @@ export default {
 
         this.$store.commit('ADD_ALERT', { type: 'success', text: `You have released ${claimedAcceptedStudent.name || claimedAcceptedStudent.id}!` })
       } catch (e) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error(e)
-        }
         this.$store.commit('ADD_ALERT', { type: 'danger', text: 'Failed to release claimed student. Please try again later...' })
       }
     }
