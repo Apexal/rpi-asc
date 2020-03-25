@@ -1,8 +1,9 @@
 // FIREBASE
-
+// import Vue from 'vue'
 import store from '@/store'
 
 // core Firebase SDK
+
 import * as firebase from 'firebase/app'
 
 // Add the Firebase products that you want to use
@@ -31,4 +32,5 @@ firebase.auth().onAuthStateChanged(function (user) {
   }
 })
 
+export const db = firebase.firestore()
 export default firebase
