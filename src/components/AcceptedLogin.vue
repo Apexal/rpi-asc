@@ -30,6 +30,12 @@ export default {
   methods: {
     async login () {
       if (!this.email) return
+      if (this.email.endsWith('@rpi.edu')) {
+        this.$emit('rpi-login', this.email)
+        this.email = ''
+        alert('Current RPI students should login with username and password.')
+        return
+      }
 
       try {
         const options = {

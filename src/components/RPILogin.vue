@@ -27,6 +27,7 @@
     <div class="form-group">
       <label for="rpi-password">Password</label>
       <input
+        ref="password"
         v-model="password"
         type="password"
         class="form-control"
@@ -44,10 +45,19 @@ import firebase from '@/firebase'
 
 export default {
   name: 'RPILogin',
+  props: {
+    email: { type: String, required: false, default: '' }
+  },
   data () {
     return {
       rcsID: '',
       password: ''
+    }
+  },
+  watch: {
+    email (newEmail) {
+      this.rcsID = newEmail.split('@')[0]
+      this.$refs.password.focus()
     }
   },
   methods: {

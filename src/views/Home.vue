@@ -6,10 +6,10 @@
     </div>
     <div class="row">
       <div class="col">
-        <AcceptedLogin />
+        <AcceptedLogin @rpi-login="rpiEmail = arguments[0]" />
       </div>
       <div class="col">
-        <RPILogin />
+        <RPILogin :email="rpiEmail" />
       </div>
     </div>
   </div>
@@ -21,6 +21,11 @@ import AcceptedLogin from '@/components/AcceptedLogin'
 
 export default {
   name: 'Home',
-  components: { RPILogin, AcceptedLogin }
+  components: { RPILogin, AcceptedLogin },
+  data () {
+    return {
+      rpiEmail: ''
+    }
+  }
 }
 </script>
