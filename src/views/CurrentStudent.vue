@@ -15,6 +15,10 @@
             </div>
             <ul class="list-group list-group-flush">
               <li
+                v-if="acceptedStudentsQueue.length === 0"
+                class="list-group-item text-muted"
+              >No accepted students are on the queue at this moment. Please hold.</li>
+              <li
                 v-for="(queuedAcceptedStudent, key) in acceptedStudentsQueue"
                 :key="queuedAcceptedStudent.id"
                 class="list-group-item"
@@ -23,7 +27,7 @@
                   <strong>{{ queuedAcceptedStudent.name || 'Unnamed Student' }}</strong>
                 </p>
                 <div class="collapse" :id="'drop-' + key">
-                  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt atque alias vitae? Nostrum vitae, iste ipsum aliquid odio a natus?</p>
+                  <p>sadasd</p>
                   <button
                     class="btn btn-primary"
                     @click="claimAcceptedStudent(queuedAcceptedStudent)"
@@ -44,10 +48,16 @@
             <div class="card-body">
               <h5 class="card-title">{{ claimedAcceptedStudent.name || 'Unnamed Student' }}</h5>
               <h6 class="card-subtitle mb-2 text-muted">{{ claimedAcceptedStudent.id }}</h6>
-              <p
-                class="card-text"
-              >Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              <a href="#" class="card-link">Done Chatting</a>
+              <p class="card-text">
+                Contact
+                <strong>{{ claimedAcceptedStudent.name || claimedAcceptedStudent.id }}</strong>
+                through {{ claimedAcceptedStudent.contactPlatform }}
+              </p>
+              <a
+                href="#"
+                class="card-link"
+                @click="releaseClaimedAcceptedStudent(claimedAcceptedStudent)"
+              >Done Chatting</a>
             </div>
           </div>
         </div>
@@ -89,6 +99,22 @@ export default {
         this.$store.commit('ADD_ALERT', { type: 'success', text: `You have claimed ${queuedAcceptedStudent.name || queuedAcceptedStudent.id}! Please reach out to them now with the details they provided.` })
       } catch (e) {
         this.$store.commit('ADD_ALERT', { type: 'danger', text: 'Failed to claim accepted student. Please try again later...' })
+      }
+    },
+    async releaseClaimedAcceptedStudent (claimedAcceptedStudent) {
+      try {
+        await db.collection('accepted').doc(claimedAcceptedStudent.id).update({
+          inQueue: false,
+          currentlyClaimedBy: null,
+          previouslyClaimedBy: [...(claimedAcceptedStudent.previouslyClaimedBy || []), this.$store.state.user.profile.email]
+        })
+
+        this.$store.commit('ADD_ALERT', { type: 'success', text: `You have released ${claimedAcceptedStudent.name || claimedAcceptedStudent.id}!` })
+      } catch (e) {
+        if (process.env.NODE_ENV === 'development') {
+          console.error(e)
+        }
+        this.$store.commit('ADD_ALERT', { type: 'danger', text: 'Failed to release claimed student. Please try again later...' })
       }
     }
   }
