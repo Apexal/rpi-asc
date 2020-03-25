@@ -1,7 +1,7 @@
 <template>
   <div class="current-student">
     <h1>Hello Current Student</h1>
-    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Cupiditate natus ipsum placeat neque ullam voluptates nesciunt voluptatum rem praesentium rerum in exercitationem aspernatur, dolorum incidunt facilis? Cumque commodi aut mollitia.</p>
+    <p>Thank you for volunteering your time! Below is a queue of students waiting to chat with you, current students. Click on their names to see details on what they have specified they'd like to talk about and what platform they can be contacted over. Click "Claim" on a student if you are able to talk to them at that moment.</p>
 
     <div class="row">
       <div class="col">
