@@ -11,6 +11,16 @@ export default new Vuex.Store({
     }
   },
   getters: {
+    userRole: (state, getters) => {
+      if (getters.loggedIn) {
+        if (state.user.profile.email.endsWith('@rpi.edu')) {
+          return state.user.data.isAdmin ? 'faculty' : 'current'
+        }
+        return 'accepted'
+      }
+
+      return null
+    },
     loggedIn: state => state.user.profile !== null // && state.user.data !== null
   },
   mutations: {

@@ -1,6 +1,7 @@
 // FIREBASE
 
 import store from '@/store'
+import router from '@/router'
 
 // core Firebase SDK
 import * as firebase from 'firebase/app'
@@ -29,6 +30,10 @@ firebase.auth().onAuthStateChanged(function (user) {
     // User is signed out.
     store.commit('SET_USER_PROFILE', null)
     store.commit('SET_USER_DATA', null)
+
+    if (router.currentRoute.matched.some(record => record.meta.requiresAuth) && !store.getters.loggedIn) {
+      router.push({ name: 'Home' })
+    }
   }
 })
 

@@ -13,7 +13,7 @@
     <div class="collapse navbar-collapse" id="navbar-content">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a href="#" class="nav-link">Link 1</a>
+          <router-link :to="{name: 'Home'}" class="nav-link">Home</router-link>
         </li>
 
         <template v-if="loggedIn">

@@ -1,6 +1,6 @@
 <template>
   <div class="profile">
-    <h1 class="mt-5">Your {{ role }} Profile</h1>
+    <h1 class="mt-5">Your {{ roleName }} Profile</h1>
 
     <form class="profile-form" @submit.prevent="saveProfile">
       <div class="form-group">
@@ -34,7 +34,7 @@
 
 <script>
 import firebase from '@/firebase'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'Profile',
@@ -45,12 +45,13 @@ export default {
   },
   computed: {
     ...mapState(['user']),
-    role () {
+    ...mapGetters(['userRole']),
+    roleName () {
       return {
         accepted: 'Accepted Student',
         faculty: 'Faculty Member',
         current: 'Current Student'
-      }[this.user.profile.role] || 'User'
+      }[this.userRole] || 'User'
     }
   },
   mounted () {

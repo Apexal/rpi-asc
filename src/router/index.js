@@ -45,11 +45,12 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
   // Confirm the link is a sign-in with email link.
-  if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
+  if (firebase.auth().isSignInWithEmailLink(window.location.href) && !store.getters.loggedIn) {
     const email = window.localStorage.getItem('emailForSignIn') || window.prompt('Please provide your email for confirmation')
 
     try {
       await firebase.auth().signInWithEmailLink(email, window.location.href)
+      return next('/profile')
     } catch (e) {
       alert(e)
     } finally {
@@ -57,8 +58,8 @@ router.beforeEach(async (to, from, next) => {
     }
   }
 
-  if (to.matched.some(record => record.meta.requiresAuth) && !store.getters.loggedIn) next('/')
-  else next()
+  if (to.matched.some(record => record.meta.requiresAuth) && !store.getters.loggedIn) return next('/')
+  else return next()
 })
 
 export default router
