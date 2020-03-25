@@ -15,7 +15,6 @@ export default new Vuex.Store({
   },
   mutations: {
     SET_USER_PROFILE (state, profile) {
-      alert('woah')
       state.user = { ...state.user, profile }
     },
     SET_USER_DATA (state, data) {
