@@ -19,7 +19,6 @@ export default {
   components: { Navbar },
   async mounted () {
     // Confirm the link is a sign-in with email link.
-    alert(window.location.href)
     if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
       const email = window.localStorage.getItem('emailForSignIn') || window.prompt('Please provide your email for confirmation')
 

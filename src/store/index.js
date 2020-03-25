@@ -15,10 +15,11 @@ export default new Vuex.Store({
   },
   mutations: {
     SET_USER_PROFILE (state, profile) {
-      state.user.profile = profile
+      alert('woah')
+      state.user = { ...state.user, profile }
     },
     SET_USER_DATA (state, data) {
-      state.user.data = data
+      state.user = { ...state.user, data }
     }
   },
   actions: {
