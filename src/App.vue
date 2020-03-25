@@ -3,7 +3,8 @@
     <header>
       <Navbar />
     </header>
-    <main class="container">
+    <main class="container mt-5">
+      <Alerts />
       <router-view />
     </main>
 
@@ -12,10 +13,11 @@
 </template>
 <script>
 import Navbar from '@/components/Navbar'
+import Alerts from '@/components/Alerts'
 
 export default {
   name: 'App',
-  components: { Navbar }
+  components: { Navbar, Alerts }
 }
 </script>
 <style lang="scss">

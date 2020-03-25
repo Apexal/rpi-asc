@@ -1,6 +1,6 @@
 <template>
   <div class="profile">
-    <h1 class="mt-5">Your {{ roleName }} Profile</h1>
+    <h1>Your {{ roleName }} Profile</h1>
 
     <form class="profile-form" @submit.prevent="saveProfile">
       <div class="form-group">
@@ -63,6 +63,7 @@ export default {
   methods: {
     async saveProfile () {
       await this.$store.dispatch('UPDATE_USER', { name: this.name })
+      this.$store.commit('ADD_ALERT', { type: 'success', text: 'Updated your profile!' })
     }
   }
 }

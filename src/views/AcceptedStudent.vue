@@ -1,6 +1,6 @@
 <template>
   <div class="accepted-student">
-    <h1 class="mt-5">Accepted Student</h1>
+    <h1>Accepted Student</h1>
   </div>
 </template>
 

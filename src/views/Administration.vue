@@ -1,6 +1,6 @@
 <template>
   <div class="administration">
-    <h1 class="mt-5">Administration</h1>
+    <h1>Administration</h1>
 
     <div class="row">
       <div class="col">

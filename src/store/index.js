@@ -7,6 +7,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    alerts: [],
     user: {
       profile: null,
       data: null
@@ -25,6 +26,12 @@ export default new Vuex.Store({
     loggedIn: state => state.user.profile !== null && state.user.data !== null
   },
   mutations: {
+    ADD_ALERT (state, { type, text }) {
+      state.alerts = [...state.alerts, { type, text: 'info' }]
+    },
+    REMOVE_ALERT (state, alertIndex) {
+      state.alerts = state.alerts.filter((_, i) => i !== alertIndex)
+    },
     SET_USER_PROFILE (state, profile) {
       state.user = { ...state.user, profile }
     },

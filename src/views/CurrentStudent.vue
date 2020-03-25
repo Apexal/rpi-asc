@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-5 current-student">
+  <div class="current-student">
     <h1>Hello Current Student</h1>
     <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Cupiditate natus ipsum placeat neque ullam voluptates nesciunt voluptatum rem praesentium rerum in exercitationem aspernatur, dolorum incidunt facilis? Cumque commodi aut mollitia.</p>
 
