@@ -16,9 +16,10 @@ exports.createUserData = functions.auth.user().onCreate(userProfile => {
 
   if (role === 'accepted') {
     // Accepted student
-    data.wantToTalk = true
+    data.wantToBeContacted = false
+    data.inQueue = true
     data.currentlyClaimedBy = null
-    data.claimedBy = []
+    data.previouslyClaimedBy = []
   }
 
   return db
