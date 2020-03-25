@@ -24,7 +24,10 @@
                 </p>
                 <div class="collapse" :id="'drop-' + key">
                   <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt atque alias vitae? Nostrum vitae, iste ipsum aliquid odio a natus?</p>
-                  <button class="btn btn-primary">Claim</button>
+                  <button
+                    class="btn btn-primary"
+                    @click="claimAcceptedStudent(queuedAcceptedStudent)"
+                  >Claim</button>
                 </div>
               </li>
             </ul>
@@ -66,15 +69,21 @@ export default {
       claimedAcceptedStudents: []
     }
   },
-  // firestore: {
-  //   acceptedStudentsQueue: db.collection('accepted')
-  // }
   async mounted () {
     try {
       await this.$bind('acceptedStudentsQueue', db.collection('accepted').where('inQueue', '==', true))
       await this.$bind('claimedAcceptedStudents', db.collection('accepted').where('inQueue', '==', false).where('currentlyClaimedBy', '==', db.collection('current').doc(this.$store.state.user.profile.email)))
     } catch (e) {
       console.error(e)
+    }
+  },
+  methods: {
+    async claimAcceptedStudent (queuedAcceptedStudent) {
+      // Take the accepted student off of the queue, and set their current claimant to the logged in user
+      await db.collection('accepted').doc(queuedAcceptedStudent.id).update({
+        inQueue: false,
+        currentlyClaimedBy: db.collection('current').doc(this.$store.state.user.profile.email)
+      })
     }
   }
 }
