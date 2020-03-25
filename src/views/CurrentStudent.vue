@@ -80,10 +80,16 @@ export default {
   methods: {
     async claimAcceptedStudent (queuedAcceptedStudent) {
       // Take the accepted student off of the queue, and set their current claimant to the logged in user
-      await db.collection('accepted').doc(queuedAcceptedStudent.id).update({
-        inQueue: false,
-        currentlyClaimedBy: db.collection('current').doc(this.$store.state.user.profile.email)
-      })
+      try {
+        await db.collection('accepted').doc(queuedAcceptedStudent.id).update({
+          inQueue: false,
+          currentlyClaimedBy: db.collection('current').doc(this.$store.state.user.profile.email)
+        })
+
+        this.$store.commit('ADD_ALERT', { type: 'success', text: `You have claimed ${queuedAcceptedStudent.name || queuedAcceptedStudent.id}! Please reach out to them now with the details they provided.` })
+      } catch (e) {
+        this.$store.commit('ADD_ALERT', { type: 'danger', text: 'Failed to claim accepted student. Please try again later...' })
+      }
     }
   }
 }

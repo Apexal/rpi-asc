@@ -26,8 +26,8 @@ export default new Vuex.Store({
     loggedIn: state => state.user.profile !== null && state.user.data !== null
   },
   mutations: {
-    ADD_ALERT (state, { type, text }) {
-      state.alerts = [...state.alerts, { type, text: 'info' }]
+    ADD_ALERT (state, { type = 'info', text }) {
+      state.alerts = [...state.alerts, { type, text }]
     },
     REMOVE_ALERT (state, alertIndex) {
       state.alerts = state.alerts.filter((_, i) => i !== alertIndex)
