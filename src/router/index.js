@@ -38,11 +38,12 @@ const routes = [
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
+  linkActiveClass: 'active',
   routes
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.requiresLogin && store.getters.loggedIn) next('/home')
+  if (to.meta.requiresLogin && !store.getters.loggedIn) next('/home')
   else next()
 })
 

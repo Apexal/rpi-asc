@@ -15,19 +15,42 @@
         <li class="nav-item">
           <a href="#" class="nav-link">Link 1</a>
         </li>
+
+        <template v-if="loggedIn">
+          <li class="nav-item">
+            <router-link :to="{name: 'Profile'}" class="nav-link">
+              <strong>{{ user.profile.email }}</strong>
+            </router-link>
+          </li>
+          <li class="nav-item" @click="logout">
+            <a href="#" class="nav-link">Logout</a>
+          </li>
+        </template>
+        <template v-else>
+          <li class="nav-item">
+            <router-link class="nav-link" :to="{name: 'Home'}">Login</router-link>
+          </li>
+        </template>
       </ul>
     </div>
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a href="#" class="nav-link">Link 1</a>
-      </li>
-    </ul>
   </nav>
 </template>
 
 <script>
+import firebase from '@/firebase'
+import { mapGetters, mapState } from 'vuex'
+
 export default {
-  name: 'Navbar'
+  name: 'Navbar',
+  computed: {
+    ...mapGetters(['loggedIn']),
+    ...mapState(['user'])
+  },
+  methods: {
+    async logout () {
+      await firebase.auth().signOut()
+    }
+  }
 }
 </script>
 
