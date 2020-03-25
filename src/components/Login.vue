@@ -28,6 +28,12 @@ export default {
   methods: {
     async login () {
       if (!this.email) return
+      if (this.email.endsWith('@rpi.edu')) {
+        // Check if this current student is on the allowed list
+        // Allowed students will already have a document in the 'current' collection
+        const doc = await firebase.firestore().collection('current').doc(this.email).get()
+        if (!doc.exists) return alert('You have not been granted permission by the faculty.')
+      }
 
       try {
         const options = {

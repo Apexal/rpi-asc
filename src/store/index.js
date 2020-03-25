@@ -48,7 +48,7 @@ export default new Vuex.Store({
     USER_LOGGED_OUT ({ state, commit, getters }) {
       commit('SET_USER_PROFILE', null)
 
-      state.userDataUnsubscribe()
+      if (state.userDataUnsubscribe) state.userDataUnsubscribe()
       commit('SET_USER_DATA_UNSUNSCRIBE', null)
       commit('SET_USER_DATA', null)
 
