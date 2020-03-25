@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 
+import firebase from '@/firebase'
 import store from '@/store'
 
 Vue.use(VueRouter)
@@ -42,8 +43,21 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth) && !store.getters.loggedIn) next('/home')
+router.beforeEach(async (to, from, next) => {
+  // Confirm the link is a sign-in with email link.
+  if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
+    const email = window.localStorage.getItem('emailForSignIn') || window.prompt('Please provide your email for confirmation')
+
+    try {
+      await firebase.auth().signInWithEmailLink(email, window.location.href)
+    } catch (e) {
+      alert(e)
+    } finally {
+      window.localStorage.removeItem('emailForSignIn')
+    }
+  }
+
+  if (to.matched.some(record => record.meta.requiresAuth) && !store.getters.loggedIn) next('/')
   else next()
 })
 
