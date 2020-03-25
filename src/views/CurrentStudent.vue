@@ -25,6 +25,10 @@
               >
                 <p data-toggle="collapse" :data-target="'#drop-' + key" class="mb-0">
                   <strong>{{ queuedAcceptedStudent.name || 'Unnamed Student' }}</strong>
+                  <span
+                    v-if="queuedAcceptedStudent.previouslyClaimedBy.includes(userEmail)"
+                    class="badge badge-warning"
+                  >already spoken to</span>
                 </p>
                 <div class="collapse" :id="'drop-' + key">
                   <p>sadasd</p>
@@ -68,8 +72,7 @@
 
 <script>
 import { db } from '@/firebase'
-
-// const queue = firebase.firestore()
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'CurrentStudent',
@@ -79,10 +82,13 @@ export default {
       claimedAcceptedStudents: []
     }
   },
+  computed: {
+    ...mapGetters(['userRole', 'userEmail'])
+  },
   async mounted () {
     try {
       await this.$bind('acceptedStudentsQueue', db.collection('accepted').where('inQueue', '==', true))
-      await this.$bind('claimedAcceptedStudents', db.collection('accepted').where('inQueue', '==', false).where('currentlyClaimedBy', '==', db.collection('current').doc(this.$store.state.user.profile.email)))
+      await this.$bind('claimedAcceptedStudents', db.collection('accepted').where('inQueue', '==', false).where('currentlyClaimedBy', '==', db.collection('current').doc(this.userEmail)))
     } catch (e) {
       console.error(e)
     }
@@ -106,7 +112,7 @@ export default {
         await db.collection('accepted').doc(claimedAcceptedStudent.id).update({
           inQueue: false,
           currentlyClaimedBy: null,
-          previouslyClaimedBy: [...(claimedAcceptedStudent.previouslyClaimedBy || []), this.$store.state.user.profile.email]
+          previouslyClaimedBy: [...(claimedAcceptedStudent.previouslyClaimedBy || []), this.userEmail]
         })
 
         this.$store.commit('ADD_ALERT', { type: 'success', text: `You have released ${claimedAcceptedStudent.name || claimedAcceptedStudent.id}!` })

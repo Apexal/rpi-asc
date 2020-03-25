@@ -15,6 +15,7 @@ export default new Vuex.Store({
     userDataUnsubscribe: null
   },
   getters: {
+    userEmail: state => state.user.profile.email,
     userRole: (state, getters) => {
       if (getters.loggedIn) {
         return state.user.profile.email.endsWith('@rpi.edu') ? 'current' : 'accepted'
