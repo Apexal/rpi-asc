@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import firebase from '@/firebase'
+
 export default {
   name: 'AcceptedLogin',
   data () {
@@ -29,7 +31,17 @@ export default {
     async login () {
       if (!this.email) return
 
-      alert('Login accepted!')
+      try {
+        const options = {
+          url: process.env.NODE_ENV === 'development' ? 'http://localhost:8080/profile' : 'https://rpi-asc.web.app/profile',
+          handleCodeInApp: true
+        }
+        await firebase.auth().sendSignInLinkToEmail(this.email, options)
+        localStorage.setItem('emailForSignIn', this.email)
+      } catch (e) {
+        localStorage.removeItem('emailForSignIn')
+        alert(e)
+      }
     }
   }
 }
