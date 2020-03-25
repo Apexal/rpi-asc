@@ -1,19 +1,17 @@
 <template>
-  <form class="accepted-login" @submit.prevent="login">
-    <h2>Accepted Student Login</h2>
-    <div class="form-group">
-      <label for="accepted-email">Email Address</label>
+  <form class="form-inline login-form border p-3" @submit.prevent="login">
+    <div class="form-group mx-sm-3">
       <input
         v-model.trim="email"
         type="email"
         class="form-control"
-        id="accepted-email"
-        name="accepted-email"
-        placeholder="Any email will do!"
+        id="email"
+        name="email"
+        placeholder="Email address"
         required
       />
     </div>
-    <button type="submit" class="btn btn-primary">Login</button>
+    <button type="submit" class="btn btn-primary">Login with Email</button>
   </form>
 </template>
 
@@ -21,7 +19,7 @@
 import firebase from '@/firebase'
 
 export default {
-  name: 'AcceptedLogin',
+  name: 'Login',
   data () {
     return {
       email: ''
@@ -30,12 +28,6 @@ export default {
   methods: {
     async login () {
       if (!this.email) return
-      if (this.email.endsWith('@rpi.edu')) {
-        this.$emit('rpi-login', this.email)
-        this.email = ''
-        alert('Current RPI students should login with username and password.')
-        return
-      }
 
       try {
         const options = {

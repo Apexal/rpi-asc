@@ -16,6 +16,7 @@ exports.createUserData = functions.auth.user().onCreate(userProfile => {
 
   if (role === 'current') {
     // Student or faculty
+    data.isAdmin = false
   } else {
     // Accepted student
     data.wantToTalk = true
