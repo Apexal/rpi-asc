@@ -23,7 +23,7 @@
         <template v-if="loggedIn">
           <li class="nav-item">
             <router-link :to="{name: 'Profile'}" class="nav-link">
-              <strong>{{ user.profile.displayName || user.profile.email }}</strong>
+              <strong>{{ user.data.name || user.profile.email }}</strong>
             </router-link>
           </li>
           <li class="nav-item" @click="logout">

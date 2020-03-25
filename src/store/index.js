@@ -16,10 +16,7 @@ export default new Vuex.Store({
   getters: {
     userRole: (state, getters) => {
       if (getters.loggedIn) {
-        if (state.user.profile.email.endsWith('@rpi.edu')) {
-          return state.user.data.isAdmin ? 'faculty' : 'current'
-        }
-        return 'accepted'
+        return state.user.profile.email.endsWith('@rpi.edu') ? 'current' : 'accepted'
       }
 
       return null
@@ -39,6 +36,9 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    async UPDATE_USER ({ state, commit, getters }, updates) {
+      return firebase.firestore().collection(getters.userRole).doc(state.user.profile.email).update(updates)
+    },
     USER_LOGGED_IN ({ commit }, user) {
       commit('SET_USER_PROFILE', user)
       const collection = user.email.endsWith('@rpi.edu') ? 'current' : 'accepted'

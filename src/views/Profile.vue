@@ -33,7 +33,6 @@
 </template>
 
 <script>
-import firebase from '@/firebase'
 import { mapState, mapGetters } from 'vuex'
 
 export default {
@@ -49,27 +48,21 @@ export default {
     roleName () {
       return {
         accepted: 'Accepted Student',
-        faculty: 'Faculty Member',
         current: 'Current Student'
       }[this.userRole] || 'User'
     }
   },
   mounted () {
-    this.name = this.user.profile.displayName
+    this.name = this.user.data.name
   },
   watch: {
-    user (newUser) {
-      this.name = newUser.profile.displayName
+    'user.data.name' (newName) {
+      this.name = newName
     }
   },
   methods: {
     async saveProfile () {
-      await firebase
-        .auth().currentUser.updateProfile({
-          displayName: this.name
-        })
-      this.$store.commit('SET_USER_PROFILE', firebase
-        .auth().currentUser)
+      await this.$store.dispatch('UPDATE_USER', { name: this.name })
     }
   }
 }
