@@ -1,18 +1,22 @@
 <template>
-  <div class="home">
-    <div class="jumbotron">
-      <h1 class="display-4">Welcome, students!</h1>
-      <p class="lead">You will be able to chat 1-on-1 with current RPI students on this site.</p>
-    </div>
-    <Login />
-  </div>
+  <component :is="component" />
 </template>
 
 <script>
-import Login from '@/components/Login'
+import Login from '@/views/Login'
+import CurrentStudent from '@/views/CurrentStudent'
+import AcceptedStudent from '@/views/AcceptedStudent'
 
 export default {
   name: 'Home',
-  components: { Login }
+  computed: {
+    component () {
+      if (this.$store.getters.loggedIn) {
+        return this.$store.getters.userRole === 'accepted' ? AcceptedStudent : CurrentStudent
+      }
+
+      return Login
+    }
+  }
 }
 </script>

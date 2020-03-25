@@ -1,12 +1,12 @@
 <template>
-  <div class="mt-5 current-student">
-    <h1>Hello Current Student</h1>
+  <div class="accepted-student">
+    <h1 class="mt-5">Accepted Student</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'CurrentStudent'
+  name: 'AcceptedStudent'
 }
 </script>
 
