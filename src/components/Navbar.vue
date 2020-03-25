@@ -15,6 +15,9 @@
         <li class="nav-item">
           <router-link :to="{name: 'Home'}" class="nav-link">Home</router-link>
         </li>
+        <li v-if="isAdmin" class="nav-item">
+          <router-link :to="{name: 'Administration'}" class="nav-link">Administration</router-link>
+        </li>
 
         <template v-if="loggedIn">
           <li class="nav-item">
@@ -43,7 +46,7 @@ import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'Navbar',
   computed: {
-    ...mapGetters(['loggedIn']),
+    ...mapGetters(['loggedIn', 'isAdmin']),
     ...mapState(['user'])
   },
   methods: {

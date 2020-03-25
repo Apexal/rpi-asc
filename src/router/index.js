@@ -33,6 +33,15 @@ const routes = [
     meta: {
       requiresAuth: true
     }
+  },
+  {
+    path: '/administration',
+    name: 'Administration',
+    component: () => import('@/views/Administration.vue'),
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
   }
 ]
 
@@ -59,7 +68,9 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (to.matched.some(record => record.meta.requiresAuth) && !store.getters.loggedIn) return next('/')
-  else return next()
+  if (to.matched.some(record => record.meta.requiresAdmin) && (!store.getters.loggedIn || !store.getters.isAdmin)) return next('/')
+
+  return next()
 })
 
 export default router

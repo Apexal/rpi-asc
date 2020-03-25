@@ -42,6 +42,7 @@ export default {
         }
         await firebase.auth().sendSignInLinkToEmail(this.email, options)
         localStorage.setItem('emailForSignIn', this.email)
+        alert('Success! Check ' + this.email + ' for the sign-in link!')
       } catch (e) {
         localStorage.removeItem('emailForSignIn')
         alert(e)
