@@ -15,12 +15,12 @@
             </div>
             <ul class="list-group list-group-flush">
               <li
-                v-for="(acceptedStudent, key) in acceptedStudentsQueue"
-                :key="acceptedStudent.id"
+                v-for="(queuedAcceptedStudent, key) in acceptedStudentsQueue"
+                :key="queuedAcceptedStudent.id"
                 class="list-group-item"
               >
                 <p data-toggle="collapse" :data-target="'#drop-' + key" class="mb-0">
-                  <strong>{{ acceptedStudent.id }}</strong>
+                  <strong>{{ queuedAcceptedStudent.name || 'Unnamed Student' }}</strong>
                 </p>
                 <div class="collapse" :id="'drop-' + key">
                   <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt atque alias vitae? Nostrum vitae, iste ipsum aliquid odio a natus?</p>
@@ -39,8 +39,8 @@
             :key="claimedAcceptedStudent.id"
           >
             <div class="card-body">
-              <h5 class="card-title">{{ claimedAcceptedStudent.id }}</h5>
-              <h6 class="card-subtitle mb-2 text-muted">Accepted Student</h6>
+              <h5 class="card-title">{{ claimedAcceptedStudent.name || 'Unnamed Student' }}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">{{ claimedAcceptedStudent.id }}</h6>
               <p
                 class="card-text"
               >Some quick example text to build on the card title and make up the bulk of the card's content.</p>
