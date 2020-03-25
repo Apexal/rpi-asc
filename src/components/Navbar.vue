@@ -18,7 +18,8 @@
         <li v-if="isAdmin" class="nav-item">
           <router-link :to="{name: 'Administration'}" class="nav-link">Administration</router-link>
         </li>
-
+      </ul>
+      <ul class="navbar-nav">
         <template v-if="loggedIn">
           <li class="nav-item">
             <router-link :to="{name: 'Profile'}" class="nav-link">
