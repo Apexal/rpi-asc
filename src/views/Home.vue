@@ -1,18 +1,26 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div class="jumbotron">
+      <h1 class="display-4">Welcome, students!</h1>
+      <p class="lead">You will be able to chat 1-on-1 with current RPI students on this site.</p>
+    </div>
+    <div class="row">
+      <div class="col">
+        <AcceptedLogin />
+      </div>
+      <div class="col">
+        <RPILogin />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import RPILogin from '@/components/RPILogin'
+import AcceptedLogin from '@/components/AcceptedLogin'
 
 export default {
   name: 'Home',
-  components: {
-    HelloWorld
-  }
+  components: { RPILogin, AcceptedLogin }
 }
 </script>
