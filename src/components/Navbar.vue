@@ -20,21 +20,14 @@
             <router-link :to="{name: 'Administration'}" class="nav-link">Administration</router-link>
           </li>
         </ul>
-        <ul class="navbar-nav">
-          <template v-if="loggedIn">
-            <span class="navbar-text">
-              Logged in as
-              <strong>{{ user.data.name || user.profile.email }}</strong>
-            </span>
-            <li class="nav-item" @click="logout">
-              <a href="#" class="nav-link">Logout</a>
-            </li>
-          </template>
-          <template v-else>
-            <li class="nav-item">
-              <router-link class="nav-link" :to="{name: 'Home'}">Login</router-link>
-            </li>
-          </template>
+        <ul v-if="loggedIn" class="navbar-nav">
+          <span class="navbar-text">
+            Logged in as
+            <strong>{{ user.data.name || user.profile.email }}</strong>
+          </span>
+          <li class="nav-item" @click="logout">
+            <a href="#" class="nav-link">Logout</a>
+          </li>
         </ul>
       </div>
     </div>

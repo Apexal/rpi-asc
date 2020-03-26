@@ -1,6 +1,6 @@
 <template>
   <div class="current-student">
-    <h1>Hello Current Student</h1>
+    <h1 class="mb-3">Hello Current Student</h1>
     <p>Thank you for volunteering your time! Below is a queue of students waiting to chat with you, current students. Click on their names to see details on what they have specified they'd like to talk about and what platform they can be contacted over. Click "Claim" on a student if you are able to talk to them at that moment.</p>
 
     <div class="row">
