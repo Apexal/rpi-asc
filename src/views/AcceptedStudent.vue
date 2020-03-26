@@ -20,9 +20,12 @@
           </div>
         </div>
         <div v-else class="claimed">
-          <p>
+          <h3>
             You are in queue with
             <strong>12</strong> other students. It may take a few minutes for a current student to reach out to you.
+          </h3>
+          <p class="text-center mt-5 mb-5">
+            <i class="fas fa-spinner"></i>
           </p>
         </div>
       </div>
@@ -59,4 +62,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.fa-spinner {
+  font-size: 5em;
+  animation: spin 1s linear infinite;
+}
 </style>
