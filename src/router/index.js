@@ -22,19 +22,6 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '@/views/About.vue')
   },
-  // {
-  //   path: '/faculty',
-  //   name: 'Faculty',
-  //   component: () => import('@/views/Faculty.vue')
-  // },
-  // {
-  //   path: '/profile',
-  //   name: 'Profile',
-  //   component: () => import('@/views/Profile.vue'),
-  //   meta: {
-  //     requiresAuth: true
-  //   }
-  // },
   {
     path: '/administration',
     name: 'Administration',
@@ -60,9 +47,9 @@ router.beforeEach(async (to, from, next) => {
 
     try {
       await firebase.auth().signInWithEmailLink(email, window.location.href)
-      return next('/profile')
+      return next('/')
     } catch (e) {
-      alert(e)
+      // alert(e)
     } finally {
       window.localStorage.removeItem('emailForSignIn')
     }

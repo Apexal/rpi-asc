@@ -43,7 +43,7 @@ export default {
 
       try {
         const options = {
-          url: process.env.NODE_ENV === 'development' ? 'http://localhost:8080/profile' : 'https://rpi-asc.web.app/profile',
+          url: process.env.NODE_ENV === 'development' ? 'http://localhost:8080/' : 'https://rpi-asc.web.app/',
           handleCodeInApp: true
         }
         await firebase.auth().sendSignInLinkToEmail(this.email, options)
