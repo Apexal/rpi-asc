@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <nav class="navbar navbar-expand-lg" :class="navbarClasses">
     <div class="container">
       <span class="navbar-brand mb-0 h1">RPI ASC</span>
       <button
@@ -48,8 +48,14 @@ import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'Navbar',
   computed: {
-    ...mapGetters(['loggedIn', 'isAdmin']),
-    ...mapState(['user'])
+    ...mapGetters(['loggedIn', 'userRole', 'isAdmin']),
+    ...mapState(['user']),
+    navbarClasses () {
+      if (this.loggedIn) {
+        return this.userRole === 'current' ? ['navbar-dark', 'bg-primary'] : ['navbar-dark', 'bg-danger']
+      }
+      return ['navbar-dark', 'bg-dark']
+    }
   },
   methods: {
     async logout () {
