@@ -27,14 +27,14 @@ const routes = [
   //   name: 'Faculty',
   //   component: () => import('@/views/Faculty.vue')
   // },
-  {
-    path: '/profile',
-    name: 'Profile',
-    component: () => import('@/views/Profile.vue'),
-    meta: {
-      requiresAuth: true
-    }
-  },
+  // {
+  //   path: '/profile',
+  //   name: 'Profile',
+  //   component: () => import('@/views/Profile.vue'),
+  //   meta: {
+  //     requiresAuth: true
+  //   }
+  // },
   {
     path: '/administration',
     name: 'Administration',

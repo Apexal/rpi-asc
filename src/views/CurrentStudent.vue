@@ -5,6 +5,11 @@
 
     <div class="row">
       <div class="col">
+        <div class="card p-3">
+          <Profile />
+        </div>
+      </div>
+      <div class="col">
         <div class="queue">
           <div class="card">
             <div class="card-header">
@@ -42,7 +47,7 @@
           </div>
         </div>
       </div>
-      <div class="col">
+      <div v-if="claimedAcceptedStudents.length > 0" class="col">
         <div class="claimed">
           <AcceptedStudentCard
             v-for="claimedAcceptedStudent in claimedAcceptedStudents"
@@ -59,11 +64,12 @@
 import { db } from '@/firebase'
 import { mapGetters } from 'vuex'
 
+import Profile from '@/components/Profile'
 import AcceptedStudentCard from '@/components/AcceptedStudentCard'
 
 export default {
   name: 'CurrentStudent',
-  components: { AcceptedStudentCard },
+  components: { AcceptedStudentCard, Profile },
   data () {
     return {
       acceptedStudentsQueue: [],
