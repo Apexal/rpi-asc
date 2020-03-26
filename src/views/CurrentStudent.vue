@@ -44,26 +44,11 @@
       </div>
       <div class="col">
         <div class="claimed">
-          <div
-            class="card"
+          <AcceptedStudentCard
             v-for="claimedAcceptedStudent in claimedAcceptedStudents"
             :key="claimedAcceptedStudent.id"
-          >
-            <div class="card-body">
-              <h5 class="card-title">{{ claimedAcceptedStudent.name || 'Unnamed Student' }}</h5>
-              <h6 class="card-subtitle mb-2 text-muted">{{ claimedAcceptedStudent.id }}</h6>
-              <p class="card-text">
-                Contact
-                <strong>{{ claimedAcceptedStudent.name || claimedAcceptedStudent.id }}</strong>
-                through {{ claimedAcceptedStudent.contactPlatform }}
-              </p>
-              <a
-                href="#"
-                class="card-link"
-                @click="releaseClaimedAcceptedStudent(claimedAcceptedStudent)"
-              >Done Chatting</a>
-            </div>
-          </div>
+            :accepted-student="claimedAcceptedStudent"
+          />
         </div>
       </div>
     </div>
@@ -74,8 +59,11 @@
 import { db } from '@/firebase'
 import { mapGetters } from 'vuex'
 
+import AcceptedStudentCard from '@/components/AcceptedStudentCard'
+
 export default {
   name: 'CurrentStudent',
+  components: { AcceptedStudentCard },
   data () {
     return {
       acceptedStudentsQueue: [],
@@ -104,19 +92,6 @@ export default {
         this.$store.commit('ADD_ALERT', { type: 'success', text: `You have claimed ${queuedAcceptedStudent.name || queuedAcceptedStudent.id}! Please reach out to them now with the details they provided.` })
       } catch (e) {
         this.$store.commit('ADD_ALERT', { type: 'danger', text: 'Failed to claim accepted student. Please try again later...' })
-      }
-    },
-    async releaseClaimedAcceptedStudent (claimedAcceptedStudent) {
-      try {
-        await db.collection('accepted').doc(claimedAcceptedStudent.id).update({
-          inQueue: false,
-          currentlyClaimedBy: null,
-          previouslyClaimedBy: [...(claimedAcceptedStudent.previouslyClaimedBy || []), this.userEmail]
-        })
-
-        this.$store.commit('ADD_ALERT', { type: 'success', text: `You have released ${claimedAcceptedStudent.name || claimedAcceptedStudent.id}!` })
-      } catch (e) {
-        this.$store.commit('ADD_ALERT', { type: 'danger', text: 'Failed to release claimed student. Please try again later...' })
       }
     }
   }
