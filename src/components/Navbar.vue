@@ -1,41 +1,42 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <span class="navbar-brand mb-0 h1">RPI ASC</span>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-toggle="collapse"
-      data-target="#navbar-content"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <div class="container">
+      <span class="navbar-brand mb-0 h1">RPI ASC</span>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbar-content"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-    <div class="collapse navbar-collapse" id="navbar-content">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <router-link :to="{name: 'Home'}" class="nav-link">Home</router-link>
-        </li>
-        <li v-if="isAdmin" class="nav-item">
-          <router-link :to="{name: 'Administration'}" class="nav-link">Administration</router-link>
-        </li>
-      </ul>
-      <ul class="navbar-nav">
-        <template v-if="loggedIn">
+      <div class="collapse navbar-collapse" id="navbar-content">
+        <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <router-link :to="{name: 'Profile'}" class="nav-link">
+            <router-link :to="{name: 'Home'}" class="nav-link">Home</router-link>
+          </li>
+          <li v-if="isAdmin" class="nav-item">
+            <router-link :to="{name: 'Administration'}" class="nav-link">Administration</router-link>
+          </li>
+        </ul>
+        <ul class="navbar-nav">
+          <template v-if="loggedIn">
+            <span class="navbar-text">
+              Logged in as
               <strong>{{ user.data.name || user.profile.email }}</strong>
-            </router-link>
-          </li>
-          <li class="nav-item" @click="logout">
-            <a href="#" class="nav-link">Logout</a>
-          </li>
-        </template>
-        <template v-else>
-          <li class="nav-item">
-            <router-link class="nav-link" :to="{name: 'Home'}">Login</router-link>
-          </li>
-        </template>
-      </ul>
+            </span>
+            <li class="nav-item" @click="logout">
+              <a href="#" class="nav-link">Logout</a>
+            </li>
+          </template>
+          <template v-else>
+            <li class="nav-item">
+              <router-link class="nav-link" :to="{name: 'Home'}">Login</router-link>
+            </li>
+          </template>
+        </ul>
+      </div>
     </div>
   </nav>
 </template>
