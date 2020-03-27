@@ -33,7 +33,8 @@
         <div v-else>
           <h3>
             You are
-            <strong>not</strong> currently in the queue for chatting with current students.
+            <strong>not</strong> currently in the queue of
+            <strong>12</strong> for chatting with current students.
           </h3>
           <button class="mt-3 btn btn-lg btn-danger" @click="onWaitlist">Join Queue</button>
           <hr />
