@@ -1,5 +1,10 @@
 <template>
   <form class="profile-form" @submit.prevent="saveProfile">
+    <span
+      class="badge float-right"
+      :class="waiting ? 'badge-warning' : 'badge-success'"
+    >{{ waiting ? 'Updating' : 'Saved'}}</span>
+    <h4>Your Info</h4>
     <div class="form-group">
       <label for="email">Email</label>
       <input
@@ -72,7 +77,7 @@
       </div>
     </div>
 
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
   </form>
 </template>
 
@@ -91,7 +96,9 @@ export default {
       },
       current: {
 
-      }
+      },
+      timeout: null,
+      waiting: false
     }
   },
   computed: {
@@ -116,12 +123,22 @@ export default {
           this.accepted.topics = newData.topics
         }
       }
-    }
+    },
+    name: 'handleChange',
+    'accepted.contactPlatform': 'handleChange',
+    'accepted.contactDetails': 'handleChange',
+    'accepted.topics': 'handleChange',
+    current: 'handleChange'
   },
   methods: {
     async saveProfile () {
       await this.$store.dispatch('UPDATE_USER', { name: this.name, ...this[this.userRole] })
-      this.$store.commit('ADD_ALERT', { type: 'success', text: 'Updated your profile!' })
+      this.waiting = false
+    },
+    handleChange () {
+      this.waiting = true
+      clearTimeout(this.timeout)
+      this.timeout = setTimeout(this.saveProfile, 1500)
     }
   }
 }

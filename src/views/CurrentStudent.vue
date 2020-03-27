@@ -13,10 +13,10 @@
         <div class="queue">
           <div class="card">
             <div class="card-header">
-              Accepted Student Queue
               <span
-                class="badge badge-primary"
+                class="badge badge-primary float-right"
               >{{ acceptedStudentsQueue.length }} waiting</span>
+              Accepted Student Queue
             </div>
             <ul class="list-group list-group-flush">
               <li
@@ -28,7 +28,7 @@
                 :key="queuedAcceptedStudent.id"
                 class="list-group-item"
               >
-                <p data-toggle="collapse" :data-target="'#drop-' + key" class="mb-0">
+                <p data-toggle="collapse" :data-target="'#drop-' + key" class="clickable mb-0">
                   <strong>{{ queuedAcceptedStudent.name || 'Unnamed Student' }}</strong>
                   <span
                     v-if="queuedAcceptedStudent.previouslyClaimedBy.includes(userEmail)"
