@@ -128,4 +128,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+textarea {
+  min-height: 50px;
+  max-height: 300px;
+}
 </style>

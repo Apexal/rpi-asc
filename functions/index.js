@@ -20,6 +20,7 @@ exports.createUserData = functions.auth.user().onCreate(userProfile => {
     data.inQueue = true
     data.currentlyClaimedBy = null
     data.previouslyClaimedBy = []
+    data.wantToBeContactedLater = false
   }
 
   return db
