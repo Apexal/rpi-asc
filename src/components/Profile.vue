@@ -31,15 +31,13 @@
 
     <div v-if="userRole === 'accepted'" class="accepted">
       <div class="form-group">
-        <label
-          for="topics"
-        >Do you want to talk about anything in particular? Concerns about the school?</label>
+        <label for="topics">Do you want to talk about anything in particular?</label>
         <textarea
           v-model="accepted.topics"
           class="form-control"
           name="topics"
           id="topics"
-          placeholder="(optional) Any questions?"
+          placeholder="(optional) Anything about the school, dorms, instructors, classes, etc."
         ></textarea>
       </div>
       <div class="form-row">

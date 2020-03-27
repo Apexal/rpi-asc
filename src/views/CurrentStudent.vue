@@ -36,7 +36,7 @@
                   >already spoken to</span>
                 </p>
                 <div class="collapse" :id="'drop-' + key">
-                  <p>sadasd</p>
+                  <p>Data here...</p>
                   <button
                     class="btn btn-primary"
                     @click="claimAcceptedStudent(queuedAcceptedStudent)"
