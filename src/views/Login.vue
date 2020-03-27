@@ -5,7 +5,7 @@
       <p class="lead">You will be able to chat 1-on-1 with current RPI students on this site.</p>
     </div>
     <form class="form-inline login-form border p-3" @submit.prevent="login">
-      <div class="form-group mx-sm-3">
+      <div class="form-group mx-sm-2">
         <input
           v-model.trim="email"
           type="email"
@@ -16,7 +16,12 @@
           required
         />
       </div>
-      <button type="submit" class="btn btn-primary">Login with Email</button>
+      <button type="submit" class="btn btn-primary mr-2">Login</button>
+
+      <span
+        id="emailHelp"
+        class="form-text text-muted"
+      >Current RPI students must use their school email. Accepted students can use any email.</span>
     </form>
   </div>
 </template>

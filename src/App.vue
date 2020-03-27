@@ -8,19 +8,19 @@
       <router-view />
     </main>
 
-    <footer class="footer bg-light mt-5 p-5">
+    <footer class="footer bg-light mt-5 p-5 text-muted text-center">
       <div class="container">
-        <span class="text-muted">
+        <p>
           Created by
           <a
             href="https://github.com/Apexal"
             target="_blank"
             rel="noopener noreferrer"
-          >Frank Matranga</a> '22 ITWS & CS and supported by the Department of Computer Science |
-          <a href="#">
-            <i class="fab fa-github"></i> Source Code
-          </a>
-        </span>
+          >Frank Matranga</a> '22 ITWS & CS and supported by the Department of Computer Science
+        </p>
+        <a href="#">
+          <i class="fab fa-github"></i> Source Code
+        </a>
       </div>
     </footer>
   </div>
