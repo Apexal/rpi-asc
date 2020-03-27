@@ -87,7 +87,7 @@ export default {
     async onWaitlist () {
       if (!confirm('Enter the queue?')) return
 
-      await this.$store.dispatch('UPDATE_USER', { inQueue: true })
+      await this.$store.dispatch('UPDATE_USER', { inQueue: true, wantToBeContactedLater: false })
     },
     async toggleLaterContact (event) {
       const checked = event.target.checked
