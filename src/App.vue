@@ -11,10 +11,13 @@
     <footer class="footer bg-light mt-5 p-5">
       <div class="container">
         <span class="text-muted">
-          Created by Frank Matranga '22 ITWS & CS and support by the Department of Computer Science |
+          Created by
           <a
-            href="#"
-          >
+            href="https://github.com/Apexal"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Frank Matranga</a> '22 ITWS & CS and supported by the Department of Computer Science |
+          <a href="#">
             <i class="fab fa-github"></i> Source Code
           </a>
         </span>
@@ -32,4 +35,7 @@ export default {
 }
 </script>
 <style lang="scss">
+.clickable {
+  cursor: pointer;
+}
 </style>
