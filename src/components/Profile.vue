@@ -49,7 +49,7 @@
               class="custom-select"
               id="contact-platform"
             >
-              <option selected>Choose your primary platform</option>
+              <option value="none" selected>Choose your primary platform</option>
               <option value="phone">Phone</option>
               <option value="discord">Discord</option>
               <option value="skype">Skype</option>
@@ -154,7 +154,12 @@ export default {
   },
   methods: {
     async saveProfile () {
-      await this.$store.dispatch('UPDATE_USER', { name: this.name, ...this[this.userRole] })
+      try {
+        await this.$store.dispatch('UPDATE_USER', { name: this.name, ...this[this.userRole] })
+      } catch (e) {
+        alert('There was an error updating your profile... Please try again later.')
+        console.error(e)
+      }
       this.waiting = false
     },
     handleChange () {
