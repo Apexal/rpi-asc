@@ -21,6 +21,15 @@ exports.createUserData = functions.auth.user().onCreate(userProfile => {
     data.currentlyClaimedBy = null
     data.previouslyClaimedBy = []
     data.wantToBeContactedLater = false
+  } else if (role === 'current') {
+    data.contactPlatforms = {
+      phone: false,
+      discord: false,
+      skype: false,
+      zoom: false,
+      webex: false,
+      wechat: false
+    }
   }
 
   return db

@@ -13,18 +13,18 @@
         <div class="queue">
           <div class="card">
             <div class="card-header">
-              <span
-                class="badge badge-primary float-right"
-              >{{ acceptedStudentsQueue.length }} waiting</span>
-              Accepted Student Queue
+              <p class="float-right m-0">
+                <span class="badge badge-info">{{ filteredQueue.length }} matches</span>
+                <span class="badge badge-primary">{{ acceptedStudentsQueue.length }} waiting</span>
+              </p>Accepted Student Queue
             </div>
             <ul class="list-group list-group-flush">
               <li
-                v-if="acceptedStudentsQueue.length === 0"
+                v-if="filteredQueue.length === 0"
                 class="list-group-item text-muted"
-              >No accepted students are on the queue at this moment. Please hold.</li>
+              >No{{ filterOtherPlatforms ? ' matching': '' }} accepted students are on the queue at this moment. Please wait!</li>
               <li
-                v-for="(queuedAcceptedStudent, key) in acceptedStudentsQueue"
+                v-for="(queuedAcceptedStudent, key) in filteredQueue"
                 :key="queuedAcceptedStudent.id"
                 class="list-group-item"
               >
@@ -81,6 +81,22 @@
             </ul>
           </div>
         </div>
+
+        <p class="text-muted p-1">
+          <br />
+          <span
+            v-if="filterOtherPlatforms"
+          >Only showing accepted students who are on the platforms you indicated.</span>
+          <span v-else>
+            Showing
+            <strong>all</strong> accepted students.
+          </span>
+          <br />
+          <a
+            href="#"
+            @click="filterOtherPlatforms = !filterOtherPlatforms"
+          >{{ filterOtherPlatforms ? 'Show all' : 'Only show matches' }}</a>
+        </p>
       </div>
       <div v-if="claimedAcceptedStudents.length > 0" class="col">
         <div class="claimed">
@@ -108,7 +124,8 @@ export default {
   data () {
     return {
       acceptedStudentsQueue: [],
-      claimedAcceptedStudents: []
+      claimedAcceptedStudents: [],
+      filterOtherPlatforms: true
     }
   },
   computed: {
@@ -116,6 +133,12 @@ export default {
     ...mapState(['user']),
     userContactPlatforms () {
       return Object.keys(this.user.data.contactPlatforms).filter(platform => this.user.data.contactPlatforms[platform])
+    },
+    filteredQueue () {
+      if (this.filterOtherPlatforms) {
+        return this.acceptedStudentsQueue.filter(acceptedStudent => this.userContactPlatforms.includes(acceptedStudent.contactPlatform))
+      }
+      return this.acceptedStudentsQueue
     }
   },
   async mounted () {
@@ -124,18 +147,10 @@ export default {
     } catch (e) {
     }
   },
-  watch: {
-    'user.data.contactPlatforms': 'bind'
-  },
   methods: {
     async bind () {
-      if (this.userContactPlatforms.length > 0) {
-        await this.$bind('acceptedStudentsQueue', db.collection('accepted')
-          .where('inQueue', '==', true)
-          .where('contactPlatform', 'in', this.userContactPlatforms))
-      } else {
-        this.$unbind('acceptedStudentsQueue')
-      }
+      await this.$bind('acceptedStudentsQueue', db.collection('accepted')
+        .where('inQueue', '==', true))
 
       await this.$bind('claimedAcceptedStudents', db.collection('accepted')
         .where('inQueue', '==', false)
