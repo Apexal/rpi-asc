@@ -95,8 +95,8 @@ export default {
       if (this.allCurrentStudents.find(student => student.id === this.newCurrentStudent + '@rpi.edu')) return alert('That user already has access.')
       if (!confirm('Are you sure you want to give access to ' + this.newCurrentStudent + '@rpi.edu?')) return
 
-      this.newCurrentStudent = this.newCurrentStudent.replace('@rpi.edu', '')
-      await db.collection('current').doc(this.newCurrentStudent).set({ isAdmin: false })
+      const email = this.newCurrentStudent + '@rpi.edu'
+      await db.collection('current').doc(email).set({ isAdmin: false })
       this.$store.commit('ADD_ALERT', { text: this.newCurrentStudent + ' is now able to login and talk to accepted students.' })
       this.newCurrentStudent = ''
     },
