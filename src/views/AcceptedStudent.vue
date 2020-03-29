@@ -3,13 +3,13 @@
     <h1 class="mb-3">Accepted Student</h1>
 
     <div class="row">
-      <div class="col">
+      <div class="col-md">
         <div class="card p-3">
           <Profile />
         </div>
       </div>
-      <div class="col">
-        <div v-if="currentlyClaimedBy" class="in-queue">
+      <div class="col-md">
+        <div v-if="currentlyClaimedBy" class="in-queue py-3">
           <h3>You have been claimed by</h3>
           <div class="card">
             <div class="card-body">
@@ -19,7 +19,7 @@
             </div>
           </div>
         </div>
-        <div v-else-if="user.data.inQueue" class="claimed">
+        <div v-else-if="user.data.inQueue" class="claimed py-3">
           <h3>
             You are in queue with
             <strong>12</strong> other students. It may take a few minutes for a current student to reach out to you.

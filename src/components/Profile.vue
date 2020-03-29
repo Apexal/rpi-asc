@@ -85,8 +85,6 @@
         </div>
       </div>
     </div>
-
-    <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
   </form>
 </template>
 
@@ -156,11 +154,10 @@ export default {
     async saveProfile () {
       try {
         await this.$store.dispatch('UPDATE_USER', { name: this.name, ...this[this.userRole] })
+        this.waiting = false
       } catch (e) {
         alert('There was an error updating your profile... Please try again later.')
-        console.error(e)
       }
-      this.waiting = false
     },
     handleChange () {
       this.waiting = true

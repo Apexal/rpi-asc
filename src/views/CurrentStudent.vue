@@ -4,13 +4,13 @@
     <p>Thank you for volunteering your time! Below is a queue of students waiting to chat with you, current students. Click on their names to see details on what they have specified they'd like to talk about and what platform they can be contacted over. Click "Claim" on a student if you are able to talk to them at that moment.</p>
 
     <div class="row">
-      <div class="col">
+      <div class="col-md">
         <div class="card p-3">
           <Profile />
         </div>
       </div>
-      <div class="col">
-        <div class="queue">
+      <div class="col-md">
+        <div class="queue py-3">
           <div class="card">
             <div class="card-header">
               <p class="float-right m-0">
@@ -35,7 +35,7 @@
                     class="badge badge-warning"
                   >already spoken to</span>
                 </p>
-                <div class="collapse" :id="'drop-' + key">
+                <div class="collapse mt-3" :id="'drop-' + key">
                   <div class="form-group">
                     <input
                       class="form-control"
