@@ -74,6 +74,17 @@
         </div>
       </div>
     </div>
+    <div v-else-if="userRole === 'current'">
+      <b>I can talk to accepted students over</b>
+      <div class="form-group row mt-2">
+        <div class="col-3" v-for="(has, platform) in current.contactPlatforms" :key="platform">
+          <label class="text-capitalize">
+            {{ platform }}
+            <input type="checkbox" v-model="current.contactPlatforms[platform]" />
+          </label>
+        </div>
+      </div>
+    </div>
 
     <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
   </form>
@@ -93,7 +104,14 @@ export default {
         topics: ''
       },
       current: {
-
+        contactPlatforms: {
+          phone: false,
+          discord: false,
+          skype: false,
+          zoom: false,
+          webex: false,
+          wechat: false
+        }
       },
       timeout: null,
       waiting: false
@@ -119,14 +137,20 @@ export default {
           this.accepted.contactPlatform = newData.contactPlatform
           this.accepted.contactDetails = newData.contactDetails
           this.accepted.topics = newData.topics
+        } else if (this.userRole === 'current') {
+          this.current.contactPlatforms = newData.contactPlatforms
         }
       }
     },
     name: 'handleChange',
-    'accepted.contactPlatform': 'handleChange',
-    'accepted.contactDetails': 'handleChange',
-    'accepted.topics': 'handleChange',
-    current: 'handleChange'
+    accepted: {
+      handler: 'handleChange',
+      deep: true
+    },
+    current: {
+      handler: 'handleChange',
+      deep: true
+    }
   },
   methods: {
     async saveProfile () {
@@ -136,7 +160,7 @@ export default {
     handleChange () {
       this.waiting = true
       clearTimeout(this.timeout)
-      this.timeout = setTimeout(this.saveProfile, 1500)
+      this.timeout = setTimeout(this.saveProfile, 1000)
     }
   }
 }
