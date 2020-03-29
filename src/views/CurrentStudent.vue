@@ -36,7 +36,42 @@
                   >already spoken to</span>
                 </p>
                 <div class="collapse" :id="'drop-' + key">
-                  <p>Data here...</p>
+                  <div class="form-group">
+                    <input
+                      class="form-control"
+                      type="text"
+                      :value="queuedAcceptedStudent.id"
+                      readonly
+                    />
+                  </div>
+                  <div class="form-group">
+                    <textarea
+                      rows="2"
+                      class="form-control"
+                      :value="queuedAcceptedStudent.topics"
+                      placeholder="No topics mentioned."
+                      readonly
+                    ></textarea>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col">
+                      <input
+                        class="form-control"
+                        type="text"
+                        :value="queuedAcceptedStudent.contactPlatform"
+                        readonly
+                      />
+                    </div>
+                    <div class="col">
+                      <input
+                        class="form-control"
+                        type="text"
+                        :value="queuedAcceptedStudent.contactDetails"
+                        readonly
+                      />
+                    </div>
+                  </div>
+
                   <button
                     class="btn btn-primary"
                     @click="claimAcceptedStudent(queuedAcceptedStudent)"
