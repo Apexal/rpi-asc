@@ -26,12 +26,27 @@
   </div>
 </template>
 <script>
+import messaging from '@/messaging'
+
 import Navbar from '@/components/Navbar'
 import Alerts from '@/components/Alerts'
 
 export default {
   name: 'App',
-  components: { Navbar, Alerts }
+  components: { Navbar, Alerts },
+  async mounted () {
+    try {
+      await messaging.requestPermission()
+      // alert('Got notification permission!')
+
+      await messaging.getToken()
+      // alert(token)
+      // eslint-disable-next-line
+      // console.log(token)
+    } catch (e) {
+      // alert(e)
+    }
+  }
 }
 </script>
 <style lang="scss">
