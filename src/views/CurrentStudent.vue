@@ -82,8 +82,7 @@
           </div>
         </div>
 
-        <p class="text-muted p-1">
-          <br />
+        <p class="text-muted p-1 mt-1">
           <span
             v-if="filterOtherPlatforms"
           >Only showing accepted students who are on the platforms you indicated.</span>
