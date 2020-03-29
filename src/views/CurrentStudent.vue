@@ -97,7 +97,7 @@
 
 <script>
 import { db } from '@/firebase'
-import { mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 import Profile from '@/components/Profile'
 import AcceptedStudentCard from '@/components/AcceptedStudentCard'
@@ -112,16 +112,35 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userRole', 'userEmail'])
+    ...mapGetters(['userRole', 'userEmail']),
+    ...mapState(['user']),
+    userContactPlatforms () {
+      return Object.keys(this.user.data.contactPlatforms).filter(platform => this.user.data.contactPlatforms[platform])
+    }
   },
   async mounted () {
     try {
-      await this.$bind('acceptedStudentsQueue', db.collection('accepted').where('inQueue', '==', true))
-      await this.$bind('claimedAcceptedStudents', db.collection('accepted').where('inQueue', '==', false).where('currentlyClaimedBy', '==', db.collection('current').doc(this.userEmail)))
+      await this.bind()
     } catch (e) {
     }
   },
+  watch: {
+    'user.data.contactPlatforms': 'bind'
+  },
   methods: {
+    async bind () {
+      if (this.userContactPlatforms.length > 0) {
+        await this.$bind('acceptedStudentsQueue', db.collection('accepted')
+          .where('inQueue', '==', true)
+          .where('contactPlatform', 'in', this.userContactPlatforms))
+      } else {
+        this.$unbind('acceptedStudentsQueue')
+      }
+
+      await this.$bind('claimedAcceptedStudents', db.collection('accepted')
+        .where('inQueue', '==', false)
+        .where('currentlyClaimedBy', '==', db.collection('current').doc(this.userEmail)))
+    },
     async claimAcceptedStudent (queuedAcceptedStudent) {
       // Take the accepted student off of the queue, and set their current claimant to the logged in user
       try {
