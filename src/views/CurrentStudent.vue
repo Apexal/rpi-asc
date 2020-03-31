@@ -63,12 +63,24 @@
                       />
                     </div>
                     <div class="col">
-                      <input
-                        class="form-control"
-                        type="text"
-                        :value="queuedAcceptedStudent.contactDetails"
-                        readonly
-                      />
+                      <div class="input-group">
+                        <input
+                          class="form-control"
+                          type="text"
+                          :value="queuedAcceptedStudent.contactDetails"
+                          readonly
+                        />
+                        <div class="input-group-append">
+                          <button
+                            class="btn btn-outline-secondary"
+                            type="button"
+                            title="Copy"
+                            @click="copyToClipboard(queuedAcceptedStudent.contactDetails)"
+                          >
+                            <i class="fas fa-clipboard"></i>
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -167,6 +179,15 @@ export default {
       } catch (e) {
         this.$store.commit('ADD_ALERT', { type: 'danger', text: 'Failed to claim accepted student. Please try again later...' })
       }
+    },
+    copyToClipboard (text) {
+      const el = document.createElement('textarea')
+      el.value = text
+      document.body.appendChild(el)
+      el.select()
+      document.execCommand('copy')
+      document.body.removeChild(el)
+      this.$store.commit('ADD_ALERT', { type: 'info', text: 'Copied details!' })
     }
   }
 }
