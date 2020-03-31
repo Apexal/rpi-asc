@@ -78,10 +78,18 @@
       <b>I can talk to accepted students over</b>
       <div class="form-group row mt-2">
         <div class="col-3" v-for="(has, platform) in current.contactPlatforms" :key="platform">
-          <label class="text-capitalize">
-            {{ platform }}
-            <input type="checkbox" v-model="current.contactPlatforms[platform]" />
-          </label>
+          <div class="custom-control custom-checkbox">
+            <input
+              v-model="current.contactPlatforms[platform]"
+              type="checkbox"
+              class="custom-control-input"
+              :id="'platform-' + platform"
+            />
+            <label
+              class="custom-control-label text-capitalize"
+              :for="'platform-' + platform"
+            >{{ platform }}</label>
+          </div>
         </div>
       </div>
     </div>
