@@ -21,7 +21,7 @@
             rel="noopener noreferrer"
           >Frank Matranga</a> '22 ITWS & CS and supported by the Department of Computer Science
         </p>
-        <a href="#">
+        <a target="_blank" href="https://github.com/Apexal/rpi-asc">
           <i class="fab fa-github"></i> Source Code
         </a>
       </div>
@@ -54,6 +54,10 @@ export default {
 }
 </script>
 <style lang="scss">
+html,
+body {
+  min-height: 100vh;
+}
 .clickable {
   cursor: pointer;
 }

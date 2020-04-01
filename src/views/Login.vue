@@ -5,7 +5,12 @@
       <p class="lead">You will be able to chat 1-on-1 with current RPI students on this site.</p>
     </div>
     <form class="form-inline login-form border p-3" @submit.prevent="login">
-      <div class="form-group mx-sm-2">
+      <span id="emailHelp" class="form-text text-muted">
+        Current RPI students must use their
+        <strong>school email</strong>. Accepted students can use
+        <strong>any email</strong>.
+      </span>
+      <div class="form-group mx-sm-2 my-0">
         <input
           v-model.trim="email"
           type="email"
@@ -22,11 +27,6 @@
         :class="loading ? 'btn-warning' : 'btn-primary'"
         :disabled="loading"
       >{{ loading ? 'Logging you in...' : 'Login' }}</button>
-
-      <span
-        id="emailHelp"
-        class="form-text text-muted"
-      >Current RPI students must use their school email. Accepted students can use any email.</span>
     </form>
   </div>
 </template>
