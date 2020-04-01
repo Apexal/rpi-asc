@@ -3,7 +3,7 @@
     <header>
       <Navbar />
     </header>
-    <transition name="fade">
+    <transition name="fade" mode="in-out">
       <Loading v-if="!$store.state.loaded" />
     </transition>
     <main v-if="$store.state.loaded" class="container mt-5">

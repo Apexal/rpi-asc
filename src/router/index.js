@@ -43,6 +43,7 @@ router.beforeEach(async (to, from, next) => {
     const email = window.localStorage.getItem('emailForSignIn') || window.prompt('Please provide your email for confirmation')
 
     try {
+      store.commit('SET_LOADED', false)
       await firebase.auth().signInWithEmailLink(email, window.location.href)
       return next('/')
     } catch (e) {

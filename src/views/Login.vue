@@ -16,7 +16,12 @@
           required
         />
       </div>
-      <button type="submit" class="btn btn-primary mr-2">Login</button>
+      <button
+        type="submit"
+        class="btn mr-2"
+        :class="loading ? 'btn-warning' : 'btn-primary'"
+        :disabled="loading"
+      >{{ loading ? 'Logging you in...' : 'Login' }}</button>
 
       <span
         id="emailHelp"
@@ -33,17 +38,22 @@ export default {
   name: 'Login',
   data () {
     return {
+      loading: false,
       email: ''
     }
   },
   methods: {
     async login () {
       if (!this.email) return
+      this.loading = true
       if (this.email.endsWith('@rpi.edu')) {
         // Check if this current student is on the allowed list
         // Allowed students will already have a document in the 'current' collection
         const doc = await firebase.firestore().collection('current').doc(this.email).get()
-        if (!doc.exists) return alert('You have not been granted permission by the faculty.')
+        if (!doc.exists) {
+          this.loading = false
+          return alert('You have not been granted permission by the faculty.')
+        }
       }
 
       try {
@@ -58,6 +68,8 @@ export default {
         localStorage.removeItem('emailForSignIn')
         alert(e)
       }
+
+      this.loading = false
     }
   }
 }
