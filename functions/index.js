@@ -27,6 +27,7 @@ exports.createUserData = functions.auth.user().onCreate(userProfile => {
     data.contactDetails = ''
     data.topics = ''
   } else if (role === 'current') {
+    data.isAdmin = false
     data.contactPlatforms = {
       phone: false,
       discord: false,
@@ -40,5 +41,5 @@ exports.createUserData = functions.auth.user().onCreate(userProfile => {
   return db
     .collection(role)
     .doc(userProfile.email)
-    .update(data)
+    .set(data)
 })
