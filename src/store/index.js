@@ -7,6 +7,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    loaded: false,
     alerts: [],
     user: {
       profile: null,
@@ -41,6 +42,9 @@ export default new Vuex.Store({
     },
     SET_USER_DATA_UNSUNSCRIBE (state, unsubscribe) {
       state.userDataUnsubscribe = unsubscribe
+    },
+    SET_LOADED (state, status) {
+      state.loaded = status
     }
   },
   actions: {
@@ -52,6 +56,7 @@ export default new Vuex.Store({
       const collection = user.email.endsWith('@rpi.edu') ? 'current' : 'accepted'
       commit('SET_USER_DATA_UNSUNSCRIBE', firebase.firestore().collection(collection).doc(user.email).onSnapshot(function (doc) {
         commit('SET_USER_DATA', doc.data())
+        commit('SET_LOADED', true)
       }))
     },
     USER_LOGGED_OUT ({ state, commit, getters }) {
@@ -60,6 +65,7 @@ export default new Vuex.Store({
       if (state.userDataUnsubscribe) state.userDataUnsubscribe()
       commit('SET_USER_DATA_UNSUNSCRIBE', null)
       commit('SET_USER_DATA', null)
+      commit('SET_LOADED', true)
 
       if (router.currentRoute.matched.some(record => record.meta.requiresAuth) && !getters.loggedIn) {
         router.push({ name: 'Home' })

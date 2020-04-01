@@ -3,7 +3,10 @@
     <header>
       <Navbar />
     </header>
-    <main class="container mt-5">
+    <transition name="fade">
+      <Loading v-if="!$store.state.loaded" />
+    </transition>
+    <main v-if="$store.state.loaded" class="container mt-5">
       <Alerts />
       <router-view />
     </main>
@@ -27,13 +30,14 @@
 </template>
 <script>
 import messaging from '@/messaging'
+import Loading from '@/views/Loading'
 
 import Navbar from '@/components/Navbar'
 import Alerts from '@/components/Alerts'
 
 export default {
   name: 'App',
-  components: { Navbar, Alerts },
+  components: { Navbar, Alerts, Loading },
   async mounted () {
     try {
       await messaging.requestPermission()
@@ -52,5 +56,13 @@ export default {
 <style lang="scss">
 .clickable {
   cursor: pointer;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
