@@ -51,29 +51,41 @@
               />
               Alternatively, are you interested in being reached out to at a
               <strong>later date and time?</strong>
-              You will be emailed by a current student and can coordinate a time to chat over {{ user.data.contactPlatform }}.
+              You will be emailed by a faculty member and can coordinate a time to chat over
+              <span class="text-capitalize">{{ user.data.contactPlatform }}</span>.
             </label>
           </div>
           <div v-if="user.data.wantToBeContactedLater">
-            <label class="mt-2" for="contact-later-date">I can chat with a current student on</label>
+            <label
+              class="mt-2"
+              for="contact-later-date"
+            >Choose a preferred time to be contacted (just for reference)</label>
             <div class="form-group row">
-              <div class="col-12 col-md-6">
+              <div class="col-12 col-md-5">
                 <input
                   v-model="user.data.contactLaterDate"
                   type="date"
                   name="date"
                   id="contact-later-date"
                   class="form-control"
+                  @change="handleContactLaterChange"
                 />
               </div>
-              <div class="col-12 col-md-6">
+              <div class="col-12 col-md-5">
                 <input
                   v-model="user.data.contactLaterTime"
                   type="time"
                   name="time"
                   id="contact-later-time"
                   class="form-control"
+                  @change="handleContactLaterChange"
                 />
+              </div>
+              <div class="col-12 col-md-1">
+                <span
+                  class="badge"
+                  :class="contactLaterSaved ? 'badge-success' : 'badge-warning'"
+                >{{ contactLaterSaved ? 'Saved' : 'Saving...'}}</span>
               </div>
             </div>
           </div>
@@ -94,7 +106,9 @@ export default {
   data () {
     return {
       queueCount: 0,
-      currentlyClaimedBy: null
+      currentlyClaimedBy: null,
+      contactLaterTimeout: null,
+      contactLaterSaved: true
     }
   },
   computed: {
@@ -115,13 +129,9 @@ export default {
           this.$unbind('currentlyClaimedBy')
         }
       }
-    },
-    'user.data.contactLaterDate' (contactLaterDate) {
-      this.$store.dispatch('UPDATE_USER', { contactLaterDate })
-    },
-    'user.data.contactLaterTime' (contactLaterTime) {
-      this.$store.dispatch('UPDATE_USER', { contactLaterTime })
     }
+    // 'user.data.contactLaterDate': 'handleContactLaterChange',
+    // 'user.data.contactLaterTime': 'handleContactLaterChange'
   },
   methods: {
     async updateQueueCount () {
@@ -142,6 +152,15 @@ export default {
       if (!confirm('Enter the queue?')) return
 
       await this.$store.dispatch('UPDATE_USER', { inQueue: true, wantToBeContactedLater: false })
+    },
+    handleContactLaterChange () {
+      this.contactLaterSaved = false
+      clearTimeout(this.contactLaterTimeout)
+      this.contactLaterTimeout = setTimeout(this.updateContactLater, 1000)
+    },
+    async updateContactLater () {
+      await this.$store.dispatch('UPDATE_USER', { contactLaterDate: this.user.data.contactLaterDate, contactLaterTime: this.user.data.contactLaterTime })
+      this.contactLaterSaved = true
     },
     async toggleLaterContact (event) {
       const checked = event.target.checked
