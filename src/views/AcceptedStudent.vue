@@ -49,10 +49,13 @@
                 :checked="user.data.wantToBeContactedLater"
                 @change="toggleLaterContact"
               />
-              Alternatively, are you interested in being reached out to later? You will be emailed by a current student and can coordinate a time to chat over {{ user.data.contactPlatform }}.
+              Alternatively, are you interested in being reached out to at a
+              <strong>later date and time?</strong>
+              You will be emailed by a current student and can coordinate a time to chat over {{ user.data.contactPlatform }}.
             </label>
           </div>
           <div v-if="user.data.wantToBeContactedLater">
+            <label class="mt-2" for="contact-later-date">I can chat with a current student on</label>
             <div class="form-group row">
               <div class="col-12 col-md-6">
                 <input
@@ -103,6 +106,8 @@ export default {
       handler (newClaimedBy) {
         if (newClaimedBy) {
           this.$bind('currentlyClaimedBy', this.user.data.currentlyClaimedBy)
+        } else {
+          this.$unbind('currentlyClaimedBy')
         }
       }
     },
