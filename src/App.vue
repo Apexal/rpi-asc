@@ -29,7 +29,7 @@
   </div>
 </template>
 <script>
-import messaging from '@/messaging'
+// import messaging from '@/messaging'
 import Loading from '@/views/Loading'
 
 import Navbar from '@/components/Navbar'
@@ -40,13 +40,8 @@ export default {
   components: { Navbar, Alerts, Loading },
   async mounted () {
     try {
-      await messaging.requestPermission()
-      // alert('Got notification permission!')
-
-      await messaging.getToken()
-      // alert(token)
-      // eslint-disable-next-line
-      // console.log(token)
+      // await messaging.requestPermission()
+      // await messaging.getToken()
     } catch (e) {
       // alert(e)
     }

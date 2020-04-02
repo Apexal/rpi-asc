@@ -1,3 +1,5 @@
+/* BREAKS ON SAFARI */
+
 import firebase from './firebase'
 
 const messaging = firebase.messaging()
