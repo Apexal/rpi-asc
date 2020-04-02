@@ -15,7 +15,11 @@
             <div class="card-body">
               <h5 class="card-title">{{ currentlyClaimedBy.name || 'Unnamed Current Student' }}</h5>
               <h6 class="card-subtitle mb-2 text-muted">{{ currentlyClaimedBy.id }}</h6>
-              <p class="card-text">Wow</p>
+              <p class="card-text">
+                They will be reaching out to you shortly over
+                <strong>{{ user.data.contactPlatform }}</strong>
+                ({{ user.data.contactDetails }})
+              </p>
             </div>
           </div>
         </div>
@@ -48,6 +52,28 @@
               Alternatively, are you interested in being reached out to later? You will be emailed by a current student and can coordinate a time to chat over {{ user.data.contactPlatform }}.
             </label>
           </div>
+          <div v-if="user.data.wantToBeContactedLater">
+            <div class="form-group row">
+              <div class="col-12 col-md-6">
+                <input
+                  v-model="user.data.contactLaterDate"
+                  type="date"
+                  name="date"
+                  id="contact-later-date"
+                  class="form-control"
+                />
+              </div>
+              <div class="col-12 col-md-6">
+                <input
+                  v-model="user.data.contactLaterTime"
+                  type="time"
+                  name="time"
+                  id="contact-later-time"
+                  class="form-control"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -75,8 +101,16 @@ export default {
     'user.data.currentlyClaimedBy': {
       immediate: true,
       handler (newClaimedBy) {
-        this.$bind('currentlyClaimedBy', this.user.data.currentlyClaimedBy)
+        if (newClaimedBy) {
+          this.$bind('currentlyClaimedBy', this.user.data.currentlyClaimedBy)
+        }
       }
+    },
+    'user.data.contactLaterDate' (contactLaterDate) {
+      this.$store.dispatch('UPDATE_USER', { contactLaterDate })
+    },
+    'user.data.contactLaterTime' (contactLaterTime) {
+      this.$store.dispatch('UPDATE_USER', { contactLaterTime })
     }
   },
   methods: {
