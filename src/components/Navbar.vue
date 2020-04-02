@@ -19,6 +19,16 @@
           <li v-if="isAdmin" class="nav-item">
             <router-link :to="{name: 'Administration'}" class="nav-link">Administration</router-link>
           </li>
+          <li v-else-if="userRole === 'accepted'" class="nav-item">
+            <a
+              href="mailto:info@cs.rpi.edu?subject=Student+Matcher+Website+Issue"
+              class="nav-link"
+              target="_blank"
+            >
+              <i class="fas fa-exclamation-triangle"></i>
+              Having issues?
+            </a>
+          </li>
         </ul>
         <ul v-if="loggedIn" class="navbar-nav">
           <span class="navbar-text">
