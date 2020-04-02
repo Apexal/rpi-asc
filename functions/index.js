@@ -26,6 +26,8 @@ exports.createUserData = functions.auth.user().onCreate(userProfile => {
     data.contactPlatform = 'none'
     data.contactDetails = ''
     data.topics = ''
+    data.contactLaterDate = ''
+    data.contactLaterTime = ''
   } else if (role === 'current') {
     data.isAdmin = false
     data.contactPlatforms = {
@@ -42,4 +44,13 @@ exports.createUserData = functions.auth.user().onCreate(userProfile => {
     .collection(role)
     .doc(userProfile.email)
     .set(data)
+})
+
+exports.queueCount = functions.https.onRequest((req, res) => {
+  return db.collection('accepted')
+    .where('inQueue', '==', true)
+    .get()
+    .then(snap => {
+      return res.status(200).send({ length: snap.size })
+    })
 })

@@ -26,7 +26,7 @@
         <div v-else-if="user.data.inQueue" class="claimed py-3">
           <h3>
             You are in queue with
-            <strong>12</strong> other students. It may take a few minutes for a current student to reach out to you.
+            <strong>{{ queueCount }}</strong> other students. It may take a few minutes for a current student to reach out to you.
           </h3>
           <p class="text-center mt-5 mb-5">
             <i class="fas fa-spinner"></i>
@@ -38,7 +38,7 @@
           <h3>
             You are
             <strong>not</strong> currently in the queue of
-            <strong>12</strong> for chatting with current students.
+            <strong>{{ queueCount }}</strong> for chatting with current students.
           </h3>
           <button class="mt-3 btn btn-lg btn-danger" @click="onWaitlist">Join Queue</button>
           <hr />
@@ -93,6 +93,7 @@ export default {
   components: { Profile },
   data () {
     return {
+      queueCount: 0,
       currentlyClaimedBy: null
     }
   },
@@ -100,13 +101,17 @@ export default {
     ...mapState(['user']),
     ...mapGetters(['userEmail'])
   },
+  mounted () {
+    setInterval(this.updateQueueCount, 60 * 1000)
+    this.updateQueueCount()
+  },
   watch: {
     'user.data.currentlyClaimedBy': {
       immediate: true,
       handler (newClaimedBy) {
         if (newClaimedBy) {
           this.$bind('currentlyClaimedBy', this.user.data.currentlyClaimedBy)
-        } else {
+        } else if (this.currentlyClaimedBy) {
           this.$unbind('currentlyClaimedBy')
         }
       }
@@ -119,6 +124,15 @@ export default {
     }
   },
   methods: {
+    async updateQueueCount () {
+      try {
+        const response = await fetch('/queueCount')
+        const data = await response.json()
+        this.queueCount = data.length
+      } catch (e) {
+        this.queueCount = -1
+      }
+    },
     async offWaitlist () {
       if (!confirm('Done chatting?')) return
 
