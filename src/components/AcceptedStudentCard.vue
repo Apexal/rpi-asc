@@ -6,8 +6,22 @@
       <p class="card-text">
         Contact
         <strong>{{ acceptedStudent.name || acceptedStudent.id }}</strong>
-        through {{ acceptedStudent.contactPlatform }}
+        through
+        <strong class="text-capitalize">{{ acceptedStudent.contactPlatform }}</strong>
       </p>
+      <div class="input-group mb-3">
+        <input class="form-control" type="text" :value="acceptedStudent.contactDetails" readonly />
+        <div class="input-group-append">
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            title="Copy"
+            @click="copyToClipboard(acceptedStudent.contactDetails)"
+          >
+            <i class="fas fa-clipboard"></i>
+          </button>
+        </div>
+      </div>
       <a href="#" class="card-link" @click="releaseClaimedAcceptedStudent">Done Chatting</a>
     </div>
   </div>
@@ -36,6 +50,15 @@ export default {
       } catch (e) {
         this.$store.commit('ADD_ALERT', { type: 'danger', text: 'Failed to release claimed student. Please try again later...' })
       }
+    },
+    copyToClipboard (text) {
+      const el = document.createElement('textarea')
+      el.value = text
+      document.body.appendChild(el)
+      el.select()
+      document.execCommand('copy')
+      document.body.removeChild(el)
+      this.$store.commit('ADD_ALERT', { type: 'info', text: 'Copied details!' })
     }
   }
 }
