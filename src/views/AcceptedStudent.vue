@@ -52,7 +52,9 @@
               Alternatively, are you interested in being reached out to at a
               <strong>later date and time?</strong>
               You will be emailed by a faculty member and can coordinate a time to chat over
-              <span class="text-capitalize">{{ user.data.contactPlatform }}</span>.
+              <span
+                class="text-capitalize"
+              >{{ user.data.contactPlatform }}</span>.
             </label>
           </div>
           <div v-if="user.data.wantToBeContactedLater">
@@ -96,6 +98,7 @@
 </template>
 
 <script>
+import firebase from '@/firebase'
 import { mapState, mapGetters } from 'vuex'
 
 import Profile from '@/components/Profile'
@@ -151,7 +154,7 @@ export default {
     async onWaitlist () {
       if (!confirm('Enter the queue?')) return
 
-      await this.$store.dispatch('UPDATE_USER', { inQueue: true, wantToBeContactedLater: false })
+      await this.$store.dispatch('UPDATE_USER', { inQueue: true, queueEnterTime: firebase.firestore.Timestamp.fromDate(new Date()), wantToBeContactedLater: false })
     },
     handleContactLaterChange () {
       this.contactLaterSaved = false

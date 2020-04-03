@@ -37,6 +37,10 @@
                     v-if="queuedAcceptedStudent.previouslyClaimedBy.includes(userEmail)"
                     class="badge badge-warning"
                   >already spoken to</span>
+                  <span
+                    v-if="queuedAcceptedStudent.queueEnterTime"
+                    class="badge badge-light float-right"
+                  >queued {{ queueEnterTimeDisplay(queuedAcceptedStudent.queueEnterTime) }}</span>
                 </p>
                 <div class="collapse mt-3" :id="'drop-' + key">
                   <div class="form-group">
@@ -126,6 +130,7 @@
 </template>
 
 <script>
+import dayjs from 'dayjs'
 import { db } from '@/firebase'
 import { mapState, mapGetters } from 'vuex'
 
@@ -150,9 +155,18 @@ export default {
     },
     filteredQueue () {
       if (this.filterOtherPlatforms) {
-        return this.acceptedStudentsQueue.filter(acceptedStudent => this.userContactPlatforms.includes(acceptedStudent.contactPlatform))
+        return this.sortedQueue.filter(acceptedStudent => this.userContactPlatforms.includes(acceptedStudent.contactPlatform))
       }
-      return this.acceptedStudentsQueue
+      return this.sortedQueue
+    },
+    sortedQueue () {
+      const newQueue = [...this.acceptedStudentsQueue]
+      newQueue.sort((a, b) => {
+        if (a.queueEnterTime.toDate() > b.queueEnterTime.toDate()) return 1
+        if (a.queueEnterTime.toDate() < b.queueEnterTime.toDate()) return -1
+        return 0
+      })
+      return newQueue
     }
   },
   async mounted () {
@@ -182,6 +196,9 @@ export default {
       } catch (e) {
         this.$store.commit('ADD_ALERT', { type: 'danger', text: 'Failed to claim accepted student. Please try again later...' })
       }
+    },
+    queueEnterTimeDisplay (queueEnterTime) {
+      return queueEnterTime ? dayjs(queueEnterTime.toDate()).format('h:mma') : '???'
     },
     copyToClipboard (text) {
       const el = document.createElement('textarea')
