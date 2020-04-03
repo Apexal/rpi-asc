@@ -50,7 +50,8 @@
               id="contact-platform"
             >
               <option value="none" selected>Choose your primary platform</option>
-              <option value="phone">Phone</option>
+              <option value="phone">Phone Call</option>
+              <option value="text">Text Messaging</option>
               <option value="discord">Discord</option>
               <option value="skype">Skype</option>
               <option value="zoom">Zoom</option>
@@ -67,7 +68,7 @@
               type="text"
               id="contact-details"
               class="form-control"
-              placeholder="Phone #, username, etc."
+              :placeholder="placeholders[accepted.contactPlatform] || 'Username, ID, link, etc.'"
               required
             />
           </div>
@@ -112,6 +113,7 @@ export default {
       current: {
         contactPlatforms: {
           phone: false,
+          text: false,
           discord: false,
           skype: false,
           zoom: false,
@@ -131,6 +133,17 @@ export default {
         accepted: 'Accepted Student',
         current: 'Current Student'
       }[this.userRole] || 'User'
+    },
+    placeholders () {
+      return {
+        text: 'Phone #',
+        phone: 'Phone #',
+        discord: 'Username and number',
+        skype: 'Skype username',
+        zoom: 'Full Zoom meeting URL',
+        webex: 'Full WebEx meeting URL',
+        wechat: 'Username'
+      }
     }
   },
   watch: {

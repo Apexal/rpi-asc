@@ -32,6 +32,7 @@ exports.createUserData = functions.auth.user().onCreate(userProfile => {
     data.isAdmin = false
     data.contactPlatforms = {
       phone: false,
+      text: false,
       discord: false,
       skype: false,
       zoom: false,
