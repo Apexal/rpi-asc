@@ -22,6 +22,8 @@
           </button>
         </div>
       </div>
+      <b>Discussion Topics</b>
+      <p>"{{ acceptedStudent.topics || 'None given.' }}"</p>
       <a href="#" class="card-link" @click="releaseClaimedAcceptedStudent">Done Chatting</a>
     </div>
   </div>
