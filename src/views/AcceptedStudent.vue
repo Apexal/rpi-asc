@@ -657,8 +657,6 @@ export default {
         }
       }
     }
-    // 'user.data.contactLaterDate': 'handleContactLaterChange',
-    // 'user.data.contactLaterTime': 'handleContactLaterChange'
   },
   methods: {
     async updateQueueCount () {
@@ -676,6 +674,7 @@ export default {
       await this.$store.dispatch('UPDATE_USER', { inQueue: false })
     },
     async onWaitlist () {
+      if (this.user.data.contactPlatform === 'none' || !this.user.data.contactDetails) return alert('Please enter your contact platform and details first!')
       if (!confirm('Enter the queue?')) return
 
       await this.$store.dispatch('UPDATE_USER', { inQueue: true, queueEnterTime: firebase.firestore.Timestamp.fromDate(new Date()), wantToBeContactedLater: false })

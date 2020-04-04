@@ -19,8 +19,8 @@ exports.createUserData = functions.auth.user().onCreate(userProfile => {
   if (role === 'accepted') {
     // Accepted student
     data.wantToBeContacted = false
-    data.inQueue = true
-    data.queueEnterTime = admin.firestore.Timestamp.fromDate(new Date())
+    data.inQueue = false
+    // data.queueEnterTime = admin.firestore.Timestamp.fromDate(new Date())
     data.currentlyClaimedBy = null
     data.previouslyClaimedBy = []
     data.wantToBeContactedLater = false
