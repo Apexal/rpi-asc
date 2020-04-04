@@ -8,7 +8,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    queueEnd: dayjs('2020-04-04T18:11:00.000Z'),
+    queueEnd: dayjs('2020-04-04T18:30:00.000Z'),
     loaded: false,
     alerts: [],
     user: {
