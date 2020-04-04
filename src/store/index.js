@@ -2,20 +2,24 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import router from '@/router'
 import firebase from '@/firebase'
+import dayjs from 'dayjs'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    queueEnd: dayjs('2020-04-04T18:11:00.000Z'),
     loaded: false,
     alerts: [],
     user: {
       profile: null,
       data: null
     },
-    userDataUnsubscribe: null
+    userDataUnsubscribe: null,
+    now: new Date()
   },
   getters: {
+    queueOpen: state => dayjs(state.now).isSameOrBefore(state.queueEnd),
     userEmail: state => state.user.profile.email,
     userRole: (state, getters) => {
       if (getters.loggedIn) {
@@ -45,6 +49,9 @@ export default new Vuex.Store({
     },
     SET_LOADED (state, status) {
       state.loaded = status
+    },
+    UPDATE_NOW (state) {
+      state.now = new Date()
     }
   },
   actions: {

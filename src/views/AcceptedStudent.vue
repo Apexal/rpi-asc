@@ -35,12 +35,17 @@
           </p>
         </div>
         <div v-else>
-          <h3>
-            You are
-            <strong>not</strong> currently in the queue of
-            <strong>{{ queueCount }}</strong> for chatting with current students.
-          </h3>
-          <button class="mt-3 btn btn-lg btn-danger" @click="onWaitlist">Join Queue</button>
+          <div v-if="queueOpen">
+            <h3>
+              You are
+              <strong>not</strong> currently in the queue of
+              <strong>{{ queueCount }}</strong> for chatting with current students.
+            </h3>
+            <button class="mt-3 btn btn-lg btn-danger" @click="onWaitlist">Join Queue</button>
+          </div>
+          <div v-else>
+            <h3>The queue has now closed. If you still want to chat with current students please notify below.</h3>
+          </div>
           <hr />
           <div class="input-group">
             <label>
@@ -49,7 +54,7 @@
                 :checked="user.data.wantToBeContactedLater"
                 @change="toggleLaterContact"
               />
-              Alternatively, are you interested in being reached out to at a
+              {{ queueOpen ? 'Alternatively, are' : 'Are' }} you interested in being reached out to at a
               <strong>later date and time?</strong>
               You will be emailed by a faculty member and can coordinate a time to chat over
               <span
@@ -598,6 +603,13 @@
             </div>
           </div>
         </div>
+
+        <hr />
+        <p v-if="queueOpen" class="text-muted">
+          The queue will close at
+          <strong>{{ queueEnd }}</strong>
+          ({{ queueEndFromNow }})
+        </p>
       </div>
     </div>
   </div>
@@ -621,8 +633,14 @@ export default {
     }
   },
   computed: {
-    ...mapState(['user']),
-    ...mapGetters(['userEmail'])
+    ...mapState(['user', 'now']),
+    ...mapGetters(['userEmail', 'queueOpen']),
+    queueEnd () {
+      return this.$store.state.queueEnd.format('h:mma')
+    },
+    queueEndFromNow () {
+      return this.$store.state.queueEnd.from(this.now)
+    }
   },
   mounted () {
     setInterval(this.updateQueueCount, 60 * 1000)
