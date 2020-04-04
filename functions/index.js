@@ -20,6 +20,7 @@ exports.createUserData = functions.auth.user().onCreate(userProfile => {
     // Accepted student
     data.wantToBeContacted = false
     data.inQueue = true
+    data.queueEnterTime = admin.firestore.Timestamp.fromDate(new Date())
     data.currentlyClaimedBy = null
     data.previouslyClaimedBy = []
     data.wantToBeContactedLater = false

@@ -162,6 +162,10 @@ export default {
     sortedQueue () {
       const newQueue = [...this.acceptedStudentsQueue]
       newQueue.sort((a, b) => {
+        if (!a.queueEnterTime && !b.queueEnterTime) return 0
+        if (!a.queueEnterTime) return 1
+        if (!b.queueEnterTime) return -1
+
         if (a.queueEnterTime.toDate() > b.queueEnterTime.toDate()) return 1
         if (a.queueEnterTime.toDate() < b.queueEnterTime.toDate()) return -1
         return 0
