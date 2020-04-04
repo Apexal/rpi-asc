@@ -39,9 +39,11 @@
             <h3>
               You are
               <strong>not</strong> currently in the queue of
-              <strong>{{ queueCount }}</strong> for chatting with current students.
+              <strong>{{ queueCount }}</strong> for chatting with current students. Join the queue to be contacted.
             </h3>
-            <button class="mt-3 btn btn-lg btn-danger" @click="onWaitlist">Join Queue</button>
+            <div class="text-center">
+              <button class="mt-3 btn btn-lg btn-danger join-queue" @click="onWaitlist">Join Queue</button>
+            </div>
           </div>
           <div v-else>
             <h3>The queue has now closed. If you still want to chat with current students please notify below.</h3>
@@ -711,5 +713,9 @@ export default {
 .fa-spinner {
   font-size: 5em;
   animation: spin 1s linear infinite;
+}
+
+.join-queue {
+  font-size: 2.5em;
 }
 </style>
