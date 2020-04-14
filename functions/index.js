@@ -1,6 +1,17 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 admin.initializeApp(functions.config().firebase)
+const nodemailer = require('nodemailer')
+
+const transporter = nodemailer.createTransport({
+  host: 'mail.rpi.edu',
+  port: 465,
+  secure: true,
+  auth: {
+    user: functions.config().email.user,
+    pass: functions.config().email.password
+  }
+})
 
 const db = admin.firestore()
 
@@ -56,3 +67,29 @@ exports.queueCount = functions.https.onRequest((req, res) => {
       return res.status(200).send({ length: snap.size })
     })
 })
+
+exports.updateUser = functions.firestore
+  .document('accepted/{email}')
+  .onUpdate(async (change, context) => {
+    const newValue = change.after.data()
+    const previousValue = change.before.data()
+
+    if (!previousValue.wantToBeContactedLater && newValue.wantToBeContactedLater) {
+      console.log(`Emailing about ${context.params.email}...`)
+
+      const info = await transporter.sendMail({
+        from: '"RPI ASC Webapp" <matraf@rpi.edu>',
+        to: functions.config().target.email + ', thefrankmatranga@gmail.com',
+        subject: 'An Accepted Student wants to be Contacted!',
+        html: `
+          <b>EMAIL:</b> <a href="mailto:${context.params.email}">${context.params.email}</a>
+          <br>
+          <b>NAME:</b> <span>${newValue.name || 'Unnamed Student'}</span>
+          <br>
+          <b>TOPICS:</b> <span>${newValue.topics || 'No discussion topics given!'}</span>
+          <br>
+          <b>CONTACT:</b> <span>${newValue.contactPlatform || 'No platform given!'} <i>(${newValue.contactDetails})</i></span>
+        `
+      })
+    }
+  })
