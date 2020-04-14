@@ -89,6 +89,8 @@ exports.updateUser = functions.firestore
           <b>TOPICS:</b> <span>${newValue.topics || 'No discussion topics given!'}</span>
           <br>
           <b>CONTACT:</b> <span>${newValue.contactPlatform || 'No platform given!'} <i>(${newValue.contactDetails})</i></span>
+          <br>
+          <b>PREFFERRED CONTACT TIME:</b> <span>${newValue.contactLaterDate} <i>(${newValue.contactLaterTime})</i></span>
         `
       })
     }
