@@ -45,26 +45,23 @@
               <button class="mt-3 btn btn-lg btn-danger join-queue" @click="onWaitlist">Join Queue</button>
             </div>
           </div>
-          <div v-else>
-            <h3>The queue has now closed. If you still want to chat with current students please notify below.</h3>
-          </div>
-          <hr />
           <div class="input-group">
-            <label>
+            <label class="h3">
               <input
                 type="checkbox"
                 :checked="user.data.wantToBeContactedLater"
-                @change="toggleLaterContact"
+                @click="toggleLaterContact"
+                ref="contact-later-checkbox"
               />
-              {{ queueOpen ? 'Alternatively, are' : 'Are' }} you interested in being reached out to at a
+              Contact me at a
               <strong>later date and time?</strong>
               You will be emailed by a faculty member and can coordinate a time to chat over
               <span
                 class="text-capitalize"
-              >{{ user.data.contactPlatform }}</span>.
+              >{{ user.data.contactPlatform }}</span> with a current RPI student.
             </label>
           </div>
-          <div v-if="user.data.wantToBeContactedLater">
+          <div>
             <label
               class="mt-2"
               for="contact-later-date"
@@ -642,6 +639,12 @@ export default {
     },
     queueEndFromNow () {
       return this.$store.state.queueEnd.from(this.now)
+    },
+    profileSet () {
+      return this.user.data.name && this.user.data.contactPlatform && this.user.data.contactDetails
+    },
+    contactLaterInfoSet () {
+      return this.user.data.contactLaterDate && this.user.data.contactLaterTime && this.user.data.contactLaterTimezone
     }
   },
   mounted () {
@@ -697,8 +700,22 @@ export default {
       this.contactLaterSaved = true
     },
     async toggleLaterContact (event) {
+      // Ensure they've given all data
+      if (!this.profileSet) {
+        this.$refs['contact-later-checkbox'].checked = false
+        return alert('Please fill out your profile and contact details first!')
+      }
+      if (!this.contactLaterInfoSet) {
+        this.$refs['contact-later-checkbox'].checked = false
+        return alert('Please choose a preferred time to be contacted first!')
+      }
+
       const checked = event.target.checked
       await this.$store.dispatch('UPDATE_USER', { wantToBeContactedLater: checked })
+
+      if (checked) {
+        alert('The CS Faculty have been directly notified and you will be contacted soon!')
+      }
     }
   }
 }
