@@ -26,7 +26,7 @@
         <div v-else-if="user.data.inQueue" class="claimed py-3">
           <h3>
             You are in queue with
-            <strong>{{ queueCount }}</strong> other students. It may take a few minutes for a current student to reach out to you.
+            <strong>{{ queueCount }}</strong> other students. It may take a few minutes for a current student to reach out to you. Remain here for updates.
           </h3>
           <p class="text-center mt-5 mb-5">
             <i class="fas fa-spinner"></i>
