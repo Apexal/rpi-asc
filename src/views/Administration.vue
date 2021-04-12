@@ -10,19 +10,16 @@
         <span>{{ neverQueued.length }} never queued</span>
       </div>
     </div>
-    <form @submit.prevent="addCurrentStudent" class="form-inline mb-3">
+    <form @submit.prevent="addCurrentStudents" class="form-inline mb-3">
       <div class="input-group mr-2">
         <input
-          v-model.trim="newCurrentStudent"
+          v-model.trim="newCurrentStudents"
           type="text"
           class="form-control"
-          placeholder="RCS ID"
+          placeholder="Emails or RCS IDs comma separated"
           minlength="3"
           required
         />
-        <div class="input-group-append">
-          <span class="input-group-text" id="rpi-addon">@rpi.edu</span>
-        </div>
       </div>
       <button class="btn btn-success">Add RPI Student</button>
     </form>
@@ -112,7 +109,7 @@ export default {
     return {
       allCurrentStudents: [],
       allAcceptedStudets: [],
-      newCurrentStudent: '',
+      newCurrentStudents: '',
       selectedStudent: null
     }
   },
@@ -133,15 +130,40 @@ export default {
     }
   },
   methods: {
-    async addCurrentStudent () {
-      if (!this.newCurrentStudent) return
-      if (this.allCurrentStudents.find(student => student.id === this.newCurrentStudent + '@rpi.edu')) return alert('That user already has access.')
-      if (!confirm('Are you sure you want to give access to ' + this.newCurrentStudent + '@rpi.edu?')) return
+    async addCurrentStudents () {
+      if (!this.newCurrentStudents) return
 
-      const email = this.newCurrentStudent + '@rpi.edu'
-      await db.collection('current').doc(email).set({ isAdmin: false })
-      this.$store.commit('ADD_ALERT', { text: this.newCurrentStudent + ' is now able to login and talk to accepted students.' })
-      this.newCurrentStudent = ''
+      const addedEmails = []
+      const batch = db.batch()
+      for (let item of this.newCurrentStudents.split(/[\n,\t\s]/)) {
+        item = item.trim().toLowerCase()
+        if (item.length === 0) continue
+        if (!item.endsWith('@rpi.edu')) item += '@rpi.edu'
+
+        if (!this.allCurrentStudents.find(student => student.id === item)) {
+          batch.set(db.collection('current').doc(item), {
+            isAdmin: false,
+            contactPlatforms: {
+              phone: false,
+              text: false,
+              discord: false,
+              skype: false,
+              zoom: false,
+              webex: false,
+              wechat: false
+            }
+          })
+
+          addedEmails.push(item)
+        }
+      }
+
+      console.log('Added current students', addedEmails)
+
+      await batch.commit()
+
+      this.$store.commit('ADD_ALERT', { text: addedEmails.length + ' new current students are now able to login and talk to accepted students.' })
+      this.newCurrentStudents = ''
     },
     async removeCurrentStudent (student) {
       if (student.id === this.userEmail) return
