@@ -158,8 +158,6 @@ export default {
         }
       }
 
-      console.log('Added current students', addedEmails)
-
       await batch.commit()
 
       this.$store.commit('ADD_ALERT', { text: addedEmails.length + ' new current students are now able to login and talk to accepted students.' })
