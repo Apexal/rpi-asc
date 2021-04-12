@@ -1,6 +1,7 @@
+/* eslint-disable promise/always-return */
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
-admin.initializeApp(functions.config().firebase)
+admin.initializeApp()
 const nodemailer = require('nodemailer')
 
 const transporter = nodemailer.createTransport({
@@ -14,6 +15,51 @@ const transporter = nodemailer.createTransport({
 })
 
 const db = admin.firestore()
+
+// exports.deleteOldAcceptedUsers = functions.https.onCall((data, context) => {
+//   const listAllUsers = (nextPageToken) => {
+//     // List batch of users, 1000 at a time.
+//     let userRecords = []
+
+//     function done () {
+//       console.log(`Found ${userRecords.length} user records`)
+//       const uidsToDelete = userRecords.filter(r => !r.email.endsWith('rpi.edu')).map(r => r.uid)
+//       console.log(uidsToDelete.length)
+
+//       admin.auth().deleteUsers(uidsToDelete)
+//         .then((deleteUsersResult) => {
+//           console.log(`Successfully deleted ${deleteUsersResult.successCount} users`)
+//           console.log(`Failed to delete ${deleteUsersResult.failureCount} users`)
+//           deleteUsersResult.errors.forEach((err) => {
+//             console.log(err.error.toJSON())
+//           })
+//         })
+//         .catch((error) => {
+//           console.log('Error deleting users:', error)
+//         })
+//     }
+
+//     admin
+//       .auth()
+//       .listUsers(1000, nextPageToken)
+//       .then((listUsersResult) => {
+//         // const accepted = listAllUsers.users
+//         userRecords = userRecords.concat(listUsersResult.users)
+//         // eslint-disable-next-line promise/always-return
+//         if (listUsersResult.pageToken) {
+//           // List next batch of users.
+//           listAllUsers(listUsersResult.pageToken)
+//         } else {
+//           done()
+//         }
+//       })
+//       .catch((error) => {
+//         console.log('Error listing users:', error)
+//       })
+//   }
+//   // Start listing users from the beginning, 1000 at a time.
+//   listAllUsers()
+// })
 
 /**
  * On user creation, add data for the user in the 'users' collection.
