@@ -45,8 +45,9 @@
               <button class="mt-3 btn btn-lg btn-danger join-queue" @click="onWaitlist">Join Queue</button>
             </div>
           </div>
+          <hr>
           <div class="input-group">
-            <label class="h3">
+            <label class="h5">
               <input
                 type="checkbox"
                 :checked="user.data.wantToBeContactedLater"
