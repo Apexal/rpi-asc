@@ -45,7 +45,8 @@
 </template>
 
 <script>
-import firebase from '@/firebase'
+import { auth } from '@/firebase'
+import { signOut } from 'firebase/auth'
 import { mapGetters, mapState } from 'vuex'
 
 export default {
@@ -62,7 +63,7 @@ export default {
   },
   methods: {
     async logout () {
-      await firebase.auth().signOut()
+      await signOut(auth)
     }
   }
 }
