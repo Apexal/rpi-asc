@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import router from '@/router'
-import firebase from '@/firebase'
 import dayjs from 'dayjs'
+
+import { db } from '@/firebase'
+import { doc, collection, updateDoc, onSnapshot } from 'firebase/firestore'
 
 Vue.use(Vuex)
 
@@ -56,12 +58,13 @@ export default new Vuex.Store({
   },
   actions: {
     async UPDATE_USER ({ state, commit, getters }, updates) {
-      return firebase.firestore().collection(getters.userRole).doc(state.user.profile.email).update(updates)
+      return updateDoc(doc(collection(db, getters.userRole)), updates)
+      // return firebase.firestore().collection(getters.userRole).doc(state.user.profile.email).update(updates)
     },
     USER_LOGGED_IN ({ commit }, user) {
       commit('SET_USER_PROFILE', user)
-      const collection = user.email.endsWith('@rpi.edu') ? 'current' : 'accepted'
-      commit('SET_USER_DATA_UNSUNSCRIBE', firebase.firestore().collection(collection).doc(user.email).onSnapshot(function (doc) {
+      const collectionName = user.email.endsWith('@rpi.edu') ? 'current' : 'accepted'
+      commit('SET_USER_DATA_UNSUNSCRIBE', onSnapshot(doc(collection(db, collectionName), user.email), function (doc) {
         commit('SET_USER_DATA', doc.data())
         commit('SET_LOADED', true)
       }))

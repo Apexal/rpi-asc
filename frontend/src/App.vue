@@ -37,15 +37,7 @@ import Alerts from '@/components/Alerts'
 
 export default {
   name: 'App',
-  components: { Navbar, Alerts, Loading },
-  async mounted () {
-    try {
-      // await messaging.requestPermission()
-      // await messaging.getToken()
-    } catch (e) {
-      // alert(e)
-    }
-  }
+  components: { Navbar, Alerts, Loading }
 }
 </script>
 <style lang="scss">
