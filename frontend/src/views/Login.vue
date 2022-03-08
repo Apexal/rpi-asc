@@ -32,7 +32,9 @@
 </template>
 
 <script>
-import firebase from '@/firebase'
+import { auth, db } from '@/firebase'
+import { sendSignInLinkToEmail } from 'firebase/auth'
+import { collection, doc, getDoc } from 'firebase/firestore'
 
 export default {
   name: 'Login',
@@ -49,8 +51,9 @@ export default {
       if (this.email.endsWith('@rpi.edu')) {
         // Check if this current student is on the allowed list
         // Allowed students will already have a document in the 'current' collection
-        const doc = await firebase.firestore().collection('current').doc(this.email).get()
-        if (!doc.exists) {
+        const userDoc = await getDoc(doc(collection(db, 'current'), this.email))
+
+        if (!userDoc.exists()) {
           this.loading = false
           return alert('You have not been granted permission by the faculty.')
         }
@@ -58,10 +61,10 @@ export default {
 
       try {
         const options = {
-          url: process.env.NODE_ENV === 'development' ? 'http://localhost:8080/' : 'https://rpi-asc.web.app/',
+          url: process.env.NODE_ENV === 'development' ? 'http://localhost:8081/' : 'https://rpi-asc.web.app/',
           handleCodeInApp: true
         }
-        await firebase.auth().sendSignInLinkToEmail(this.email, options)
+        await sendSignInLinkToEmail(auth, this.email, options)
         localStorage.setItem('emailForSignIn', this.email)
         alert('Success! Check ' + this.email + ' for the sign-in link!')
       } catch (e) {

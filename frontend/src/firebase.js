@@ -1,16 +1,9 @@
 // FIREBASE
-// import Vue from 'vue'
 import store from '@/store'
 
-// core Firebase SDK
-
-import * as firebase from 'firebase/app'
-
-// Add the Firebase products that you want to use
-import 'firebase/auth'
-import 'firebase/firestore'
-import 'firebase/analytics'
-// import 'firebase/messaging'
+import { initializeApp } from 'firebase/app'
+import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore'
+import { getAuth, connectAuthEmulator } from 'firebase/auth'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyB_Ll6jVASgD4taEIXAqL5zzXPMbVRgPYE',
@@ -23,10 +16,17 @@ const firebaseConfig = {
   measurementId: 'G-GJBC22GSHH'
 }
 
-firebase.initializeApp(firebaseConfig)
-firebase.analytics()
+const firebaseApp = initializeApp(firebaseConfig)
 
-firebase.auth().onAuthStateChanged(function (user) {
+export const db = getFirestore(firebaseApp)
+export const auth = getAuth(firebaseApp)
+
+if (location.hostname === 'localhost') {
+  connectAuthEmulator(auth, 'http://localhost:9099')
+  connectFirestoreEmulator(db, 'localhost', 8080)
+}
+
+auth.onAuthStateChanged(function (user) {
   if (user) {
     // User is signed in.
     store.dispatch('USER_LOGGED_IN', user)
@@ -35,6 +35,3 @@ firebase.auth().onAuthStateChanged(function (user) {
     store.dispatch('USER_LOGGED_OUT')
   }
 })
-
-export const db = firebase.firestore()
-export default firebase

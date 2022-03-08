@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import firebase from '@/firebase'
+import { isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth'
+import { auth } from '@/firebase'
+
 import store from '@/store'
 
 import Home from '@/views/Home'
@@ -39,12 +41,12 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
   // Confirm the link is a sign-in with email link.
-  if (firebase.auth().isSignInWithEmailLink(window.location.href) && !store.getters.loggedIn) {
+  if (isSignInWithEmailLink(auth, window.location.href) && !store.getters.loggedIn) {
     const email = window.localStorage.getItem('emailForSignIn') || window.prompt('Please provide your email for confirmation')
 
     try {
       store.commit('SET_LOADED', false)
-      await firebase.auth().signInWithEmailLink(email, window.location.href)
+      await signInWithEmailLink(auth, email, window.location.href)
       return next('/')
     } catch (e) {
       // alert(e)
