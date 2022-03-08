@@ -131,17 +131,21 @@
 
 <script>
 import dayjs from 'dayjs'
-import { db } from '@/firebase'
 import { mapState, mapGetters } from 'vuex'
 
 import Profile from '@/components/Profile'
 import AcceptedStudentCard from '@/components/AcceptedStudentCard'
+
+import { db } from '@/firebase'
+import { doc, query, where, collection, onSnapshot, updateDoc } from '@firebase/firestore'
 
 export default {
   name: 'CurrentStudent',
   components: { AcceptedStudentCard, Profile },
   data () {
     return {
+      acceptedQueueUnsub: null,
+      claimedQueueUnsub: null,
       acceptedStudentsQueue: [],
       claimedAcceptedStudents: [],
       filterOtherPlatforms: true
@@ -177,23 +181,56 @@ export default {
     try {
       await this.bind()
     } catch (e) {
+      console.log(e)
+    }
+  },
+  beforeDestroy () {
+    if (this.acceptedQueueUnsub) {
+      this.acceptedQueueUnsub()
+    }
+    if (this.claimedQueueUnsub) {
+      this.claimedQueueUnsub()
     }
   },
   methods: {
     async bind () {
-      await this.$bind('acceptedStudentsQueue', db.collection('accepted')
-        .where('inQueue', '==', true))
+      const handleError = (error) => {
+        console.error('error', { error })
+      }
 
-      await this.$bind('claimedAcceptedStudents', db.collection('accepted')
-        .where('inQueue', '==', false)
-        .where('currentlyClaimedBy', '==', db.collection('current').doc(this.userEmail)))
+      this.acceptedQueueUnsub = onSnapshot(query(collection(db, 'accepted'), where('inQueue', '==', true)), (snapshot) => {
+        const newDocs = []
+        snapshot.forEach(doc => {
+          newDocs.push({
+            id: doc.id,
+            ...doc.data()
+          })
+        })
+
+        this.acceptedStudentsQueue = newDocs
+      }, handleError)
+
+      this.claimedQueueUnsub = onSnapshot(query(collection(db, 'accepted'),
+        where('inQueue', '==', false),
+        where('currentlyClaimedBy', '==', doc(collection(db, 'current'), this.userEmail))
+      ), (snapshot) => {
+        const newDocs = []
+        snapshot.forEach(doc => {
+          newDocs.push({
+            id: doc.id,
+            ...doc.data()
+          })
+        })
+
+        this.claimedAcceptedStudents = newDocs
+      }, handleError)
     },
     async claimAcceptedStudent (queuedAcceptedStudent) {
       // Take the accepted student off of the queue, and set their current claimant to the logged in user
       try {
-        await db.collection('accepted').doc(queuedAcceptedStudent.id).update({
+        updateDoc(doc(collection(db, 'accepted'), queuedAcceptedStudent.id), {
           inQueue: false,
-          currentlyClaimedBy: db.collection('current').doc(this.$store.state.user.profile.email)
+          currentlyClaimedBy: doc(collection(db, 'current'), this.$store.state.user.profile.email)
         })
 
         this.$store.commit('ADD_ALERT', { type: 'success', text: `You have claimed ${queuedAcceptedStudent.name || queuedAcceptedStudent.id}! Please reach out to them now with the details they provided.` })

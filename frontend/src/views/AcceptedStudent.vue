@@ -616,10 +616,12 @@
 </template>
 
 <script>
-import firebase from '@/firebase'
 import { mapState, mapGetters } from 'vuex'
 
 import Profile from '@/components/Profile'
+
+// import { db } from '@/firebase'
+import { onSnapshot } from '@firebase/firestore'
 
 export default {
   name: 'AcceptedStudent',
@@ -627,6 +629,7 @@ export default {
   data () {
     return {
       queueCount: 0,
+      currentlyClaimedByUnSub: null,
       currentlyClaimedBy: null,
       contactLaterTimeout: null,
       contactLaterSaved: true
@@ -657,9 +660,15 @@ export default {
       immediate: true,
       handler (newClaimedBy) {
         if (newClaimedBy) {
-          this.$bind('currentlyClaimedBy', this.user.data.currentlyClaimedBy)
+          this.currentlyClaimedByUnSub = onSnapshot(this.user.data.currentlyClaimedBy, (doc) => {
+            this.currentlyClaimedBy = {
+              id: doc.id,
+              ...doc.data()
+            }
+          })
         } else if (this.currentlyClaimedBy) {
-          this.$unbind('currentlyClaimedBy')
+          this.currentlyClaimedByUnSub()
+          this.currentlyClaimedBy = null
         }
       }
     }
@@ -683,7 +692,7 @@ export default {
       if (this.user.data.contactPlatform === 'none' || !this.user.data.contactDetails) return alert('Please enter your contact platform and details first!')
       if (!confirm('Enter the queue?')) return
 
-      await this.$store.dispatch('UPDATE_USER', { inQueue: true, queueEnterTime: firebase.firestore.Timestamp.fromDate(new Date()), wantToBeContactedLater: false })
+      await this.$store.dispatch('UPDATE_USER', { inQueue: true, queueEnterTime: new Date(), wantToBeContactedLater: false })
     },
     handleContactLaterChange () {
       this.contactLaterSaved = false

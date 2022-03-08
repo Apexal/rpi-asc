@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import { firestorePlugin } from 'vuefire'
 import './firebase'
 import App from './App.vue'
 import router from './router'
@@ -9,8 +8,6 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 dayjs.extend(relativeTime)
 dayjs.extend(isSameOrBefore)
-
-Vue.use(firestorePlugin)
 
 Vue.config.productionTip = false
 
