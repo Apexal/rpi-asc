@@ -31,6 +31,8 @@
 
 <script>
 import { db } from '@/firebase'
+import { collection, doc, updateDoc } from 'firebase/firestore'
+
 import { mapGetters } from 'vuex'
 
 export default {
@@ -42,11 +44,12 @@ export default {
   methods: {
     async releaseClaimedAcceptedStudent () {
       try {
-        await db.collection('accepted').doc(this.acceptedStudent.id).update({
+        await updateDoc(doc(collection(db, 'accepted'), this.acceptedStudent.id), {
           inQueue: false,
           currentlyClaimedBy: null,
           previouslyClaimedBy: [...(this.acceptedStudent.previouslyClaimedBy || []), this.userEmail]
         })
+        // await db.collection('accepted').doc(this.acceptedStudent.id).update()
 
         this.$store.commit('ADD_ALERT', { type: 'success', text: `You have released ${this.acceptedStudent.name || this.acceptedStudent.id}!` })
       } catch (e) {

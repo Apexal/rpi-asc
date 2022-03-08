@@ -10,7 +10,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    queueEnd: dayjs('2021-04-21T00:45:00.000Z'),
+    queueEnd: dayjs('2022-04-21T00:45:00.000Z'),
     loaded: false,
     alerts: [],
     user: {
@@ -58,8 +58,7 @@ export default new Vuex.Store({
   },
   actions: {
     async UPDATE_USER ({ state, commit, getters }, updates) {
-      return updateDoc(doc(collection(db, getters.userRole)), updates)
-      // return firebase.firestore().collection(getters.userRole).doc(state.user.profile.email).update(updates)
+      return updateDoc(doc(collection(db, getters.userRole), state.user.profile.email), updates)
     },
     USER_LOGGED_IN ({ commit }, user) {
       commit('SET_USER_PROFILE', user)
