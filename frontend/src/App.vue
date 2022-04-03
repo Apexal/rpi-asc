@@ -14,12 +14,12 @@
     <footer class="footer bg-light mt-5 p-5 text-muted text-center">
       <div class="container">
         <p>
-          Created by
+          Created by an
           <a
-            href="https://github.com/Apexal"
+            href="https://handbook.rcos.io"
             target="_blank"
             rel="noopener noreferrer"
-          >Frank Matranga</a> '22 ITWS & CS and supported by the Department of Computer Science
+          >RCOS Student</a> and supported by the Department of Computer Science
         </p>
         <a target="_blank" href="https://github.com/Apexal/rpi-asc">
           <i class="fab fa-github"></i> Source Code
