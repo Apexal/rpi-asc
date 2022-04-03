@@ -181,7 +181,7 @@ export default {
     try {
       await this.bind()
     } catch (e) {
-      console.log(e)
+      alert('There was an error connecting to the server. Please try again later!')
     }
   },
   beforeDestroy () {
@@ -194,8 +194,10 @@ export default {
   },
   methods: {
     async bind () {
+      // eslint-disable-next-line handle-callback-err
       const handleError = (error) => {
-        console.error('error', { error })
+        alert('There was an error connecting to the server. Please try again later!')
+        // console.error('error', { error })
       }
 
       this.acceptedQueueUnsub = onSnapshot(query(collection(db, 'accepted'), where('inQueue', '==', true)), (snapshot) => {

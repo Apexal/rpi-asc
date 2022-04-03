@@ -1,41 +1,42 @@
-/* eslint-disable promise/always-return */
-const functions = require('firebase-functions')
-const admin = require('firebase-admin')
+const functions = require("firebase-functions")
+const admin = require("firebase-admin")
 admin.initializeApp()
-const nodemailer = require('nodemailer')
 
-const transporter = nodemailer.createTransport({
-  host: 'mail.rpi.edu',
-  port: 465,
-  secure: true,
-  auth: {
-    user: functions.config().email.user,
-    pass: functions.config().email.password
-  }
-})
+// const nodemailer = require("nodemailer")
+// const transporter = nodemailer.createTransport({
+//   host: "mail.rpi.edu",
+//   port: 465,
+//   secure: true,
+//   auth: {
+//     user: functions.config().email.user,
+//     pass: functions.config().email.password
+//   }
+// })
 
 const db = admin.firestore()
 
-// exports.deleteOldAcceptedUsers = functions.https.onCall((data, context) => {
+// exports.deleteAllUsers = functions.https.onCall(() => {
 //   const listAllUsers = (nextPageToken) => {
 //     // List batch of users, 1000 at a time.
 //     let userRecords = []
 
 //     function done () {
-//       console.log(`Found ${userRecords.length} user records`)
-//       const uidsToDelete = userRecords.filter(r => !r.email.endsWith('rpi.edu')).map(r => r.uid)
-//       console.log(uidsToDelete.length)
+//       functions.logger.info(`Found ${userRecords.length} user records`)
+//       const uidsToDelete = userRecords/**.filter(r => !r.email.endsWith("rpi.edu"))**/.map(r => r.uid)
+//       functions.logger.info(uidsToDelete.length)
 
 //       admin.auth().deleteUsers(uidsToDelete)
 //         .then((deleteUsersResult) => {
-//           console.log(`Successfully deleted ${deleteUsersResult.successCount} users`)
-//           console.log(`Failed to delete ${deleteUsersResult.failureCount} users`)
+//           functions.logger.info(`Successfully deleted ${deleteUsersResult.successCount} users`)
+//           functions.logger.info(`Failed to delete ${deleteUsersResult.failureCount} users`)
 //           deleteUsersResult.errors.forEach((err) => {
-//             console.log(err.error.toJSON())
+//             functions.logger.info(err.error.toJSON())
 //           })
+
+//           return true;
 //         })
 //         .catch((error) => {
-//           console.log('Error deleting users:', error)
+//           functions.logger.error("Error deleting users:", error)
 //         })
 //     }
 
@@ -54,11 +55,15 @@ const db = admin.firestore()
 //         }
 //       })
 //       .catch((error) => {
-//         console.log('Error listing users:', error)
+//         functions.logger.info("Error listing users:", error)
 //       })
 //   }
 //   // Start listing users from the beginning, 1000 at a time.
 //   listAllUsers()
+
+//   return {
+//     length: 10
+//   }
 // })
 
 /**
@@ -67,13 +72,13 @@ const db = admin.firestore()
 exports.createUserData = functions.auth.user().onCreate(userProfile => {
   // Determine whether the new user is a current student or accepted student
   // If they are a faculty member, they will need this property to be manually assigned to 'faculty'
-  const role = userProfile.email.endsWith('@rpi.edu') ? 'current' : 'accepted'
+  const role = userProfile.email.endsWith("@rpi.edu") ? "current" : "accepted"
 
   const data = {
-    name: ''
+    name: ""
   }
 
-  if (role === 'accepted') {
+  if (role === "accepted") {
     // Accepted student
     data.wantToBeContacted = false
     data.inQueue = false
@@ -81,12 +86,12 @@ exports.createUserData = functions.auth.user().onCreate(userProfile => {
     data.currentlyClaimedBy = null
     data.previouslyClaimedBy = []
     data.wantToBeContactedLater = false
-    data.contactPlatform = 'none'
-    data.contactDetails = ''
-    data.topics = ''
-    data.contactLaterDate = ''
-    data.contactLaterTime = ''
-  } else if (role === 'current') {
+    data.contactPlatform = "none"
+    data.contactDetails = ""
+    data.topics = ""
+    data.contactLaterDate = ""
+    data.contactLaterTime = ""
+  } else if (role === "current") {
     data.isAdmin = false
     data.contactPlatforms = {
       phone: false,
@@ -105,39 +110,39 @@ exports.createUserData = functions.auth.user().onCreate(userProfile => {
     .set(data)
 })
 
-exports.queueCount = functions.https.onRequest((req, res) => {
-  return db.collection('accepted')
-    .where('inQueue', '==', true)
+exports.queueCount = functions.https.onCall(() => {
+  return db.collection("accepted")
+    .where("inQueue", "==", true)
     .get()
     .then(snap => {
-      return res.status(200).send({ length: snap.size })
+      return { length: snap.size };
     })
 })
 
-exports.updateUser = functions.firestore
-  .document('accepted/{email}')
-  .onUpdate(async (change, context) => {
-    const newValue = change.after.data()
-    const previousValue = change.before.data()
+// exports.updateUser = functions.firestore
+//   .document('accepted/{email}')
+//   .onUpdate(async (change, context) => {
+//     const newValue = change.after.data()
+//     const previousValue = change.before.data()
 
-    if (!previousValue.wantToBeContactedLater && newValue.wantToBeContactedLater) {
-      console.log(`Emailing about ${context.params.email}...`)
+//     if (!previousValue.wantToBeContactedLater && newValue.wantToBeContactedLater) {
+//       functions.logger.info(`Emailing about ${context.params.email}...`)
 
-      const info = await transporter.sendMail({
-        from: '"RPI ASC Webapp" <matraf@rpi.edu>',
-        to: functions.config().target.email + ', thefrankmatranga@gmail.com',
-        subject: 'An Accepted Student wants to be Contacted!',
-        html: `
-          <b>EMAIL:</b> <a href="mailto:${context.params.email}">${context.params.email}</a>
-          <br>
-          <b>NAME:</b> <span>${newValue.name || 'Unnamed Student'}</span>
-          <br>
-          <b>TOPICS:</b> <span>${newValue.topics || 'No discussion topics given!'}</span>
-          <br>
-          <b>CONTACT:</b> <span>${newValue.contactPlatform || 'No platform given!'} <i>(${newValue.contactDetails})</i></span>
-          <br>
-          <b>PREFFERRED CONTACT TIME:</b> <span>${newValue.contactLaterDate} <i>(${newValue.contactLaterTime})</i></span>
-        `
-      })
-    }
-  })
+//       const info = await transporter.sendMail({
+//         from: '"RPI ASC Webapp" <matraf@rpi.edu>',
+//         to: functions.config().target.email + ', thefrankmatranga@gmail.com',
+//         subject: 'An Accepted Student wants to be Contacted!',
+//         html: `
+//           <b>EMAIL:</b> <a href="mailto:${context.params.email}">${context.params.email}</a>
+//           <br>
+//           <b>NAME:</b> <span>${newValue.name || 'Unnamed Student'}</span>
+//           <br>
+//           <b>TOPICS:</b> <span>${newValue.topics || 'No discussion topics given!'}</span>
+//           <br>
+//           <b>CONTACT:</b> <span>${newValue.contactPlatform || 'No platform given!'} <i>(${newValue.contactDetails})</i></span>
+//           <br>
+//           <b>PREFFERRED CONTACT TIME:</b> <span>${newValue.contactLaterDate} <i>(${newValue.contactLaterTime})</i></span>
+//         `
+//       })
+//     }
+//   })

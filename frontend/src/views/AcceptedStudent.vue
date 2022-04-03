@@ -676,15 +676,12 @@ export default {
   },
   methods: {
     async updateQueueCount () {
-      const getQueueCount = httpsCallable(functions, 'queueCount')
-
       try {
-        console.log('updating queue count')
+        const getQueueCount = httpsCallable(functions, 'queueCount')
         const result = await getQueueCount({})
         this.queueCount = this.user.data.inQueue ? result.data.length - 1 : result.data.length
       } catch (e) {
-        console.error(e)
-        this.queueCount = '?'
+        this.queueCount = 0
       }
     },
     async offWaitlist () {
