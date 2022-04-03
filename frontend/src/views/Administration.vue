@@ -59,7 +59,7 @@
           <td>{{ student.contactPlatform }}</td>
           <td>{{ student.contactDetails }}</td>
           <td>
-            <button class="btn btn-sm btn-danger">Ban</button>
+            <button class="btn btn-sm btn-danger" disabled>Ban</button>
           </td>
         </tr>
       </tbody>
@@ -98,7 +98,7 @@
 <script>
 import dayjs from 'dayjs'
 import { db } from '@/firebase'
-import { doc, collection, onSnapshot, runTransaction } from '@firebase/firestore'
+import { doc, collection, onSnapshot, runTransaction, deleteDoc } from '@firebase/firestore'
 
 import { mapGetters } from 'vuex'
 
@@ -120,6 +120,7 @@ export default {
   async mounted () {
     // this.$bind('allCurrentStudents', db.collection('current'))
     // this.$bind('allAcceptedStudents', db.collection('accepted'))
+    this.bind()
   },
   computed: {
     ...mapGetters(['userEmail']),
@@ -208,8 +209,7 @@ export default {
     async removeCurrentStudent (student) {
       if (student.id === this.userEmail) return
       if (!confirm('Are you sure you want to remove access from ' + student.id + '?')) return
-
-      await db.collection('current').doc(student.id).delete()
+      await deleteDoc(doc(collection(db, 'current'), student.id))
       this.$store.commit('ADD_ALERT', { type: 'success', text: (student.id || student.name) + ' is NO LONGER able to login and talk to accepted students.' })
     },
     contactLaterDisplay (s) {
