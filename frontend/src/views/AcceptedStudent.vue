@@ -620,8 +620,9 @@ import { mapState, mapGetters } from 'vuex'
 
 import Profile from '@/components/Profile'
 
-// import { db } from '@/firebase'
+import { functions } from '@/firebase'
 import { onSnapshot } from '@firebase/firestore'
+import { httpsCallable } from '@firebase/functions'
 
 export default {
   name: 'AcceptedStudent',
@@ -652,7 +653,7 @@ export default {
     }
   },
   mounted () {
-    setInterval(this.updateQueueCount, 60 * 1000)
+    setInterval(this.updateQueueCount, 60 * 1000 * 2)
     this.updateQueueCount()
   },
   watch: {
@@ -675,12 +676,15 @@ export default {
   },
   methods: {
     async updateQueueCount () {
+      const getQueueCount = httpsCallable(functions, 'queueCount')
+
       try {
-        const response = await fetch('/queueCount')
-        const data = await response.json()
-        this.queueCount = data.length
+        console.log('updating queue count')
+        const result = await getQueueCount({})
+        this.queueCount = this.user.data.inQueue ? result.data.length - 1 : result.data.length
       } catch (e) {
-        this.queueCount = -1
+        console.error(e)
+        this.queueCount = '?'
       }
     },
     async offWaitlist () {
