@@ -4,7 +4,6 @@
       <h1 class="display-4">Welcome, students!</h1>
       <p class="lead">You will be able to chat 1-on-1 with current RPI students on this site.</p>
     </div>
-    <code>{{ status }}</code>
     <form class="form-inline login-form border p-3" @submit.prevent="login">
         <span id="emailHelp" class="form-text text-muted">
           Current RPI students must use their
