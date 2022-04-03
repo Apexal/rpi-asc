@@ -41,7 +41,7 @@
         </tr>
       </tbody>
     </table>
-    <h2>Accepted Students ({{ allAcceptedStudets.length }})</h2>
+    <h2>Accepted Students ({{ allAcceptedStudents.length }})</h2>
     <table class="table table-sm">
       <thead class="thead-dark">
         <tr>
@@ -53,7 +53,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="student in allAcceptedStudets" :key="student.id">
+        <tr v-for="student in allAcceptedStudents" :key="student.id">
           <td>{{ student.id }}</td>
           <td>{{ student.name }}</td>
           <td>{{ student.contactPlatform }}</td>
@@ -98,6 +98,8 @@
 <script>
 import dayjs from 'dayjs'
 import { db } from '@/firebase'
+import { doc, collection, onSnapshot, runTransaction } from '@firebase/firestore'
+
 import { mapGetters } from 'vuex'
 
 import StudentModal from '@/components/StudentModal'
@@ -108,60 +110,100 @@ export default {
   data () {
     return {
       allCurrentStudents: [],
-      allAcceptedStudets: [],
+      allCurrentStudentsUnsub: null,
+      allAcceptedStudents: [],
+      allAcceptedStudentsUnsub: null,
       newCurrentStudents: '',
       selectedStudent: null
     }
   },
   async mounted () {
-    this.$bind('allCurrentStudents', db.collection('current'))
-    this.$bind('allAcceptedStudets', db.collection('accepted'))
+    // this.$bind('allCurrentStudents', db.collection('current'))
+    // this.$bind('allAcceptedStudents', db.collection('accepted'))
   },
   computed: {
     ...mapGetters(['userEmail']),
     totalConversations () {
-      return this.allAcceptedStudets.reduce((acc, s) => acc + s.previouslyClaimedBy.length, 0)
+      return this.allAcceptedStudents.reduce((acc, s) => acc + s.previouslyClaimedBy.length, 0)
     },
     contactLater () {
-      return this.allAcceptedStudets.filter(s => s.wantToBeContactedLater)
+      return this.allAcceptedStudents.filter(s => s.wantToBeContactedLater)
     },
     neverQueued () {
-      return this.allAcceptedStudets.filter(s => s.previouslyClaimedBy.length === 0 && !s.inQueue)
+      return this.allAcceptedStudents.filter(s => s.previouslyClaimedBy.length === 0 && !s.inQueue)
+    }
+  },
+  beforeDestroy () {
+    if (this.allCurrentStudentsUnsub) {
+      this.allCurrentStudentsUnsub()
+    }
+    if (this.allAcceptedStudentsUnsub) {
+      this.allAcceptedStudentsUnsub()
     }
   },
   methods: {
+    async bind () {
+      // eslint-disable-next-line handle-callback-err
+      const handleError = (error) => {
+        alert('There was an error connecting to the server. Please try again later!')
+        // console.error('error', { error })
+      }
+
+      this.allCurrentStudentsUnsub = onSnapshot(collection(db, 'current'), (snapshot) => {
+        const newDocs = []
+        snapshot.forEach(doc => {
+          newDocs.push({
+            id: doc.id,
+            ...doc.data()
+          })
+        })
+
+        this.allCurrentStudents = newDocs
+      }, handleError)
+
+      this.allAcceptedStudentsUnsub = onSnapshot(collection(db, 'accepted'), (snapshot) => {
+        const newDocs = []
+        snapshot.forEach(doc => {
+          newDocs.push({
+            id: doc.id,
+            ...doc.data()
+          })
+        })
+
+        this.allAcceptedStudents = newDocs
+      }, handleError)
+    },
     async addCurrentStudents () {
       if (!this.newCurrentStudents) return
 
-      const addedEmails = []
-      const batch = db.batch()
-      for (let item of this.newCurrentStudents.split(/[\n,\t\s]/)) {
-        item = item.trim().toLowerCase()
-        if (item.length === 0) continue
-        if (!item.endsWith('@rpi.edu')) item += '@rpi.edu'
+      await runTransaction(db, async (transaction) => {
+        const addedEmails = []
+        for (let item of this.newCurrentStudents.split(/[\n,\t\s]/)) {
+          item = item.trim().toLowerCase()
+          if (item.length === 0) continue
+          if (!item.endsWith('@rpi.edu')) item += '@rpi.edu'
 
-        if (!this.allCurrentStudents.find(student => student.id === item)) {
-          batch.set(db.collection('current').doc(item), {
-            isAdmin: false,
-            contactPlatforms: {
-              phone: false,
-              text: false,
-              discord: false,
-              skype: false,
-              zoom: false,
-              webex: false,
-              wechat: false
-            }
-          })
+          if (!this.allCurrentStudents.find(student => student.id === item)) {
+            transaction.set(doc(collection(db, 'current'), item), {
+              isAdmin: false,
+              contactPlatforms: {
+                phone: false,
+                text: false,
+                discord: false,
+                skype: false,
+                zoom: false,
+                webex: false,
+                wechat: false
+              }
+            })
 
-          addedEmails.push(item)
+            addedEmails.push(item)
+          }
         }
-      }
 
-      await batch.commit()
-
-      this.$store.commit('ADD_ALERT', { text: addedEmails.length + ' new current students are now able to login and talk to accepted students.' })
-      this.newCurrentStudents = ''
+        this.$store.commit('ADD_ALERT', { text: addedEmails.length + ' new current students are now able to login and talk to accepted students.' })
+        this.newCurrentStudents = ''
+      })
     },
     async removeCurrentStudent (student) {
       if (student.id === this.userEmail) return
